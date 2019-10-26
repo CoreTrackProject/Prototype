@@ -1,0 +1,6 @@
+[submodule "ThirdParty/imgui"]
+	path = ThirdParty/imgui
+	url = https://github.com/ocornut/imgui
+[submodule "ThirdParty/imgui-node-editor"]
+	path = ThirdParty/imgui-node-editor
+	url = https://github.com/syoyo/imgui-node-editor
