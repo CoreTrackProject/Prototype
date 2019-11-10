@@ -88,7 +88,7 @@ void WindowManager::Init() {
 		const float default_font_scale = 16.f;
 
 		ImFontConfig roboto_config;
-		strcpy_s(roboto_config.Name, "Roboto");
+		strcpy(roboto_config.Name, "Roboto");
 		roboto_config.SizePixels = default_font_scale;
 		roboto_config.OversampleH = 2;
 		roboto_config.OversampleV = 2;
@@ -185,7 +185,7 @@ void WindowManager::glEndFrame(GLFWwindow *window) {
 	currentTime = glfwGetTime();
 	const auto deltaTime = currentTime - previousTime;
 	if (deltaTime >= 1.0) {
-		sprintf_s(title, "FPS [%dFPS]", frameCount);
+		sprintf(title, "FPS [%dFPS]", frameCount);
 		glfwSetWindowTitle(window, title);
 		frameCount = 0;
 		previousTime = currentTime;

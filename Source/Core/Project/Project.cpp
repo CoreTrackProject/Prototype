@@ -23,9 +23,9 @@ Project &Project::GetInstance() {
 	return projectInstance;
 }
 
-void Project::OpenProject(std::string projectDirPath) {
+void Project::OpenProject(std::string projectFilePath) {
 	std::shared_ptr<ProjectLoaderTask> newTask = std::make_shared<ProjectLoaderTask>();
-	newTask->SetProjectPath(projectDirPath);
+    newTask->SetProjectFilePath(projectFilePath);
 
 	TaskScheduler::GetInstance().AddTask(newTask, true);
 
@@ -40,16 +40,22 @@ void Project::OpenProject(std::string projectDirPath) {
 	
 }
 
-void Project::NewProject(std::string projectName) {
-
-	this->status = ProjectStatus::ProjectNotSavedOnFilesystem;
-
+void Project::NewProject(std::string projectNamePath) {
 	ProjectHeaderData data;
-	data.ProjectName = projectName;
-	
-	this->currProject = std::make_shared<ProjectHeader>(data);
 
-	BOOST_LOG_TRIVIAL(info) << "New project \"" << projectName << "\" created.";
+    boost::filesystem::path path {projectNamePath};
+    data.ProjectName = path.stem().string();
+
+
+	this->currProject = std::make_shared<ProjectHeader>(data);
+    this->currProject->SetProjectPath(projectNamePath);
+
+
+    this->SaveProjectAs(projectNamePath);
+
+    this->status = ProjectStatus::ProjectSaved;
+
+    BOOST_LOG_TRIVIAL(info) << "New project \"" << projectNamePath << "\" created.";
 }
 
 ProjectStatus Project::GetProjectStatus() {
@@ -59,8 +65,7 @@ ProjectStatus Project::GetProjectStatus() {
 void Project::SaveProject() {
 
 	std::shared_ptr<ProjectSaveTask> newTask = std::make_shared<ProjectSaveTask>();
-	
-	
+
 	newTask->SetProjectName(this->currProject->GetProjectHeaderData().ProjectName);
 	newTask->SetProjectPath(this->currProject->GetProjectPath());
 	newTask->SetProjectHeaderData(this->currProject->GetProjectHeaderData());

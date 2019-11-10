@@ -24,6 +24,6 @@ public:
 	void OpenProjectCallback(std::string filePath);
 	void NewProjectCallback(std::string newProjectName);
 	void SaveProjectCallback();
-	void SaveProjectAsCallback(std::string projectDirPath);
+    void SaveProjectAsCallback(std::string projectFilePath);
 
 };

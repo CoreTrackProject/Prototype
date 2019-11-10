@@ -1,5 +1,7 @@
 cmake_minimum_required(VERSION 3.5)
 
+set(CMAKE_TOOLCHAIN_FILE "./ThirdParty/vcpkg/scripts/buildsystems/vcpkg.cmake")
+
 set(BUILD_TARGET "CoreTrack")
 
 set(BUILD_VERSION_MAJOR 0)
@@ -23,7 +25,7 @@ find_package(unofficial-nativefiledialog CONFIG REQUIRED)
 find_package(Boost REQUIRED filesystem log serialization)
 
 
-include(Build/CMake/Utils.cmake)
+include(CMake/Utils.cmake)
 
 
 set_property(GLOBAL PROPERTY source_list)

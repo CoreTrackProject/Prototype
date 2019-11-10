@@ -8,7 +8,7 @@
 
 class ProjectLoaderTask : public ITask {
 
-	std::string projectDirPath;
+	std::string projectFilePath;
 	std::shared_ptr<ProjectHeader> header;
 	TaskStatus status;
 
@@ -27,7 +27,7 @@ public:
 	TaskStatus GetStatus();
 	std::shared_ptr<void> GetResult();
 
-	void SetProjectPath(std::string projectPath);
+	void SetProjectFilePath(std::string projectPath);
 
 	
 };

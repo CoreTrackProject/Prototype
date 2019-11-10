@@ -18,8 +18,6 @@ private:
 	std::function<void()> saveProjectCallback;
 	std::function<void(std::string)> saveProjectAsCallback;
 
-	bool showNewProjectDialog = false;
-
 	char newProjectInputText[256] = "";
 
 public:
@@ -36,11 +34,10 @@ public:
 	void SetSaveProjectAsCallback(std::function<void(std::string)> saveProjectAsCallback);
 
 private:
-	void drawToolbar();
-	void drawNewProjectDialog();
+    void drawToolbar();
 
 	void openProject();
-	void newProject(std::string newProjectName);
+    void newProject();
 
 	void saveProject();
 	void saveProjectAs();

@@ -68,7 +68,6 @@ void ProjectSaveTask::writeProjectHeader() {
 
 
 			boost::filesystem::path projectPath{ this->projectDirPath };
-			projectPath.append("Project.json");
 
 			if (!boost::filesystem::exists(projectPath))
 			{
@@ -107,7 +106,6 @@ void ProjectSaveTask::generateProjectDirStructure() {
 
 bool ProjectSaveTask::checkIfProjectExists() {
 	boost::filesystem::path projectPath{ this->projectDirPath };
-	projectPath.append("Project.json");
 
 	return boost::filesystem::exists(projectPath);
 }

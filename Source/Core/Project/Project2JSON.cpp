@@ -10,8 +10,6 @@
 #include <boost/log/trivial.hpp>
 
 
-
-
 Project2JSON::Project2JSON() {
 
 	contentTypeEnumStr.insert(std::make_pair(FileType::Animation, "Animation"));
@@ -36,27 +34,39 @@ std::string Project2JSON::HeaderToJSON(ProjectHeaderData header) {
 		{
 			ptree project;
 			{
-				ptree projectSub;
-				{
-					projectSub.put("ProjectName", header.ProjectName);
-				}
-				project.add_child("Project", projectSub);
+                project.put("Name", header.ProjectName);
+
+
+                // Add file list array
+                ptree contentCollection;
+                {
+                    for (Content cont : header.ContentCollection)
+                    {
+                        ptree item;
+                        item.put("", cont.FileHash);
+                        contentCollection.push_back(std::make_pair("", item));
+                    }
+
+                }
+                project.add_child("ContentCollection", contentCollection);
+
+
 			}
 			fullData.add_child("Project", project);
 
 
 			ptree content;
-			{
-				ptree contentSub;
-				{
-					for (Content cont : header.ContentCollection)
-					{
-						contentSub.put(cont.FileHash, cont.FilePath);
-						contentSub.put("FileType", this->ContentTypeToString(cont.Type));
-					}
-				}
-				content.add_child("Content", contentSub);
-			}
+            {
+                for (Content cont : header.ContentCollection)
+                {
+                    ptree contentDesc;
+
+                    content.put("FilePath", cont.FilePath);
+                    content.put("FileType", this->ContentTypeToString(cont.Type));
+
+                    content.add_child(cont.FileHash, content);
+                }
+            }
 			fullData.add_child("Content", content);
 		}
 		
@@ -87,20 +97,19 @@ ProjectHeaderData Project2JSON::JSONToHeader(std::string jsonStr) {
 				data.ProjectName = project.get<std::string>("Project.Name", "");
 
 				// FileCollection is a array  of uuid's which point to a file
-				for (ptree::value_type &content : project.get_child("FileCollection"))
+                for (ptree::value_type &content : project.get_child("Project.ContentCollection"))
 				{
 					// Foreach file read the data
-					std::string uuid = content.second.data();
+                    std::string fileHash = content.second.data();
 
 					// Read the header data of a single file
 					Content contentInfo;
 					{
-						contentInfo.FilePath = project.get<std::string>("Content." + uuid + ".FilePath", "");
-						contentInfo.FileHash = project.get<std::string>("Content." + uuid + ".FileHash", "");
+                        contentInfo.FilePath = project.get<std::string>("Content." + fileHash + ".FilePath", "");
+                        contentInfo.FileHash = project.get<std::string>("Content." + fileHash + ".FileHash", "");
 						contentInfo.Type =
-							this->StringToContentType(project.get<std::string>("Content." + uuid + ".FileType", ""));
+                            this->StringToContentType(project.get<std::string>("Content." + fileHash + ".FileType", ""));
 
-						contentInfo.UUID = boost::lexical_cast<boost::uuids::uuid>(uuid);
 
 						// Missing is Cache and CacheHash
 
@@ -118,6 +127,8 @@ ProjectHeaderData Project2JSON::JSONToHeader(std::string jsonStr) {
 
 
 	}
+
+    return ProjectHeaderData();
 }
 
 std::string Project2JSON::ContentTypeToString(FileType type) {
@@ -130,4 +141,5 @@ FileType Project2JSON::StringToContentType(std::string type) {
 			return i.first;
 		}
 	}
+    return FileType::Other;
 }

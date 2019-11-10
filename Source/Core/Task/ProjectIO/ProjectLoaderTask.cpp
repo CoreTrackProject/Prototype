@@ -18,7 +18,7 @@ ProjectLoaderTask::~ProjectLoaderTask() {}
 void ProjectLoaderTask::Start() {
 	this->status = TaskStatus::Running;
 
-	if (!this->projectDirPath.empty() && this->containsProjectJSONFile()) {
+    if (!this->projectFilePath.empty() && this->containsProjectJSONFile()) {
 		this->readProjectHeader();
 	}
 	else {
@@ -45,8 +45,8 @@ std::shared_ptr<void> ProjectLoaderTask::GetResult() {
 	return this->header;
 }
 
-void ProjectLoaderTask::SetProjectPath(std::string projectDirPath) {
-	this->projectDirPath = projectDirPath;
+void ProjectLoaderTask::SetProjectFilePath(std::string projectFilePath) {
+    this->projectFilePath = projectFilePath;
 }
 
 void ProjectLoaderTask::readProjectHeader() {
@@ -68,7 +68,7 @@ void ProjectLoaderTask::readProjectHeader() {
 			ProjectHeaderData data = p2j.JSONToHeader(sstr.str());
 			std::shared_ptr<ProjectHeader> hdr = std::make_shared<ProjectHeader>();
 			hdr->SetProjectHeaderData(data);
-			hdr->SetProjectPath(this->projectDirPath);
+            hdr->SetProjectPath(this->projectFilePath);
 
 			this->header.swap(hdr);
 
@@ -88,15 +88,13 @@ bool ProjectLoaderTask::containsProjectJSONFile() {
 
 	if (!prjFileExists)
 	{
-		BOOST_LOG_TRIVIAL(error) << "Project.json has not been found in the directory: " << this->projectDirPath;
+        BOOST_LOG_TRIVIAL(error) << "Project.json has not been found in the directory: " << this->projectFilePath;
 	}
 
 	return prjFileExists;
 }
 
 boost::filesystem::path ProjectLoaderTask::getProjectFilePath() {
-	boost::filesystem::path prjPath(this->projectDirPath);
-	prjPath.append("Project.json");
-
+    boost::filesystem::path prjPath(this->projectFilePath);
 	return prjPath;
 }

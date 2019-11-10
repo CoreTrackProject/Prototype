@@ -3,6 +3,7 @@
 #include "ProjectHeader.h"
 
 #include <string>
+#include <memory>
 
 enum class ProjectStatus {
 	ProjectNotSaved, // Not saved in terms of changes

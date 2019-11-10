@@ -27,20 +27,20 @@ void MainWindowController::Render() {
 	this->view->Render();
 }
 
-void MainWindowController::OpenProjectCallback(std::string directoryPath) {
+void MainWindowController::OpenProjectCallback(std::string filePath) {
 
 	// Where do the var checks happen? 
 	// (View or Controller) for instance
 	// if the file path is empty.
 
-	BOOST_LOG_TRIVIAL(debug) << "OpenProjectCallback Result: " << directoryPath;
-	Project::GetInstance().OpenProject(directoryPath);
+    BOOST_LOG_TRIVIAL(debug) << "OpenProjectCallback Result: " << filePath;
+    Project::GetInstance().OpenProject(filePath);
 }
 
-void MainWindowController::NewProjectCallback(std::string newProjectName) {
+void MainWindowController::NewProjectCallback(std::string newProjectPath) {
 	BOOST_LOG_TRIVIAL(debug) << "NewProjectCallback";
 
-	Project::GetInstance().NewProject(newProjectName);
+    Project::GetInstance().NewProject(newProjectPath);
 }
 
 void MainWindowController::SaveProjectCallback() {
@@ -48,6 +48,6 @@ void MainWindowController::SaveProjectCallback() {
 	Project::GetInstance().SaveProject();
 }
 
-void MainWindowController::SaveProjectAsCallback(std::string projectDirPath) {
-	Project::GetInstance().SaveProjectAs(projectDirPath);
+void MainWindowController::SaveProjectAsCallback(std::string projectFilePath) {
+    Project::GetInstance().SaveProjectAs(projectFilePath);
 }

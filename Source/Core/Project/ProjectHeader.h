@@ -19,7 +19,6 @@ struct Content {
 	std::string FilePath; // File path in the project directory structure
 	std::string FileHash; // Hash of the file to check for intance if file has changed or cache is still valid
 	FileType Type;
-	boost::uuids::uuid UUID;
 };
 
 struct ProjectHeaderData {

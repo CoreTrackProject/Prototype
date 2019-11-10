@@ -6,6 +6,10 @@
 #include <boost/log/trivial.hpp>
 
 
+#include <boost/predef.h>
+
+#include <iostream>
+
 MainWindowView::MainWindowView(MainWindowModel &mainWndModel) : model(mainWndModel) {
 
 }
@@ -13,6 +17,7 @@ MainWindowView::MainWindowView(MainWindowModel &mainWndModel) : model(mainWndMod
 MainWindowView::~MainWindowView() {
 
 }
+
 
 void MainWindowView::Init() {
 
@@ -100,13 +105,15 @@ void MainWindowView::Render() {
 #endif
 
 	this->drawToolbar();
-	this->drawNewProjectDialog();
+    //this->drawNewProjectDialog();
 
 }
 
 void MainWindowView::DeInit() {
 
 }
+
+
 
 void MainWindowView::SetOpenProjectCallback(std::function<void(std::string)> openProjectCallback) {
 	this->openProjectCallback = openProjectCallback;
@@ -135,7 +142,8 @@ void MainWindowView::drawToolbar() {
 			if (ImGui::MenuItem("New Project")) {
 				// Clear input text
 				memset(&this->newProjectInputText[0], 0, sizeof(this->newProjectInputText));
-				this->showNewProjectDialog = true;
+                this->newProject();
+                //this->showNewProjectDialog = true;
 			}
 
 			if (ImGui::MenuItem("Open Project..")) {
@@ -203,52 +211,21 @@ void MainWindowView::drawToolbar() {
 	}
 }
 
-void MainWindowView::drawNewProjectDialog() {
-
-	if (this->showNewProjectDialog) {
-
-		ImGui::Begin("New project name");
-
-		ImGui::PushItemWidth(ImGui::GetWindowWidth());
-
-		bool const isReturnPressed = ImGui::InputText("", this->newProjectInputText, 256, ImGuiInputTextFlags_EnterReturnsTrue | ImGuiInputTextFlags_CharsNoBlank);
-		bool const isSavePressed = ImGui::Button("Save");
-		ImGui::SameLine(0.0f, 10.0f);
-		bool const isCancelPressed = ImGui::Button("Cancel");
-
-		if (isReturnPressed || isSavePressed) {
-
-			if (strcmp(this->newProjectInputText, "") == 0) { return; }
-
-			this->showNewProjectDialog = false;
-			this->newProject(this->newProjectInputText);
-
-		}
-		else if (isCancelPressed) {
-			this->showNewProjectDialog = false;
-
-		}
-
-		ImGui::End();
-
-	}
-
-}
 
 void MainWindowView::openProject() {
 
 	
-	nfdchar_t  *outDirPath = NULL;
-	nfdresult_t result = NFD_PickFolder("", &outDirPath);
+    nfdchar_t  *filePath = nullptr;
+    nfdresult_t result = NFD_OpenDialog(nullptr, nullptr, &filePath );
 
 	if (result == NFD_OKAY) {
-		BOOST_LOG_TRIVIAL(info) << "Project directory selected: " << outDirPath;
+        BOOST_LOG_TRIVIAL(info) << "Project directory selected: " << filePath;
 
 		// Can a view class open a project or only the controller? -> controller
 		// Loading a project is a task, can a view open a new task? -> NO!
-		this->openProjectCallback(outDirPath);
+        this->openProjectCallback(filePath);
 
-		free(outDirPath);
+        free(filePath);
 
 	} else if (result == NFD_CANCEL) {
 		BOOST_LOG_TRIVIAL(info) << "Project selection has been canceled";
@@ -258,8 +235,40 @@ void MainWindowView::openProject() {
 	}
 }
 
-void MainWindowView::newProject(std::string newProjectName) {
-	this->newProjectCallback(newProjectName);
+void MainWindowView::newProject() {
+
+    auto status = Project::GetInstance().GetProjectStatus();
+    if (status == ProjectStatus::NoProjectLoaded || status == ProjectStatus::ProjectSaved) {
+
+        {
+            nfdchar_t  *outFilePath = nullptr;
+            nfdresult_t result = NFD_SaveDialog(nullptr, nullptr, &outFilePath );
+
+            if (result == NFD_OKAY) {
+                // Save project as callback
+
+                this->newProjectCallback(outFilePath);
+
+                free(outFilePath);
+
+            } else if (result == NFD_CANCEL) {
+                BOOST_LOG_TRIVIAL(info) << "File selection has been canceled";
+
+            } else {
+                BOOST_LOG_TRIVIAL(info) << "NFD Error: " << NFD_GetError();
+            }
+
+
+        }
+
+    } else {
+        // Curr project has to be saved or aborted before new project can be created
+
+
+
+    }
+
+
 }
 
 void MainWindowView::saveProject() {
@@ -277,19 +286,21 @@ void MainWindowView::saveProject() {
 }
 
 void MainWindowView::saveProjectAs() {
+    // NFD_PickFolder does not work on pop_os 19.10 Hmmm
 
-	nfdchar_t  *outDirPath = NULL;
-	nfdresult_t result = NFD_PickFolder("", &outDirPath);
+    nfdchar_t  *outFilePath = nullptr;
+    nfdresult_t result = NFD_SaveDialog(nullptr, nullptr, &outFilePath );
 
-	if (result == NFD_OKAY) {
+    if (result == NFD_OKAY) {
 		// Save project as callback
-		this->saveProjectAsCallback(outDirPath);
-		free(outDirPath);
+        this->saveProjectAsCallback(outFilePath);
+        free(outFilePath);
 
 	} else if (result == NFD_CANCEL) {
-		BOOST_LOG_TRIVIAL(info) << "Directory selection has been canceled";
+        BOOST_LOG_TRIVIAL(info) << "File selection has been canceled";
 
 	} else {
 		BOOST_LOG_TRIVIAL(info) << "NFD Error: " << NFD_GetError();
-	}
+    }
+
 }
