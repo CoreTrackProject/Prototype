@@ -1,4 +1,5 @@
 #include "Project.h"
+#include "Utils/File.h"
 
 
 #include "Task/ProjectIO/ProjectLoaderTask.h"
@@ -10,7 +11,12 @@
 #include <boost/log/trivial.hpp>
 
 
+
+
 Project::Project() {
+    // Init dummy project
+
+    this->currProject = std::make_shared<ProjectHeader>();
 
 }
 
@@ -18,9 +24,9 @@ Project::~Project() {}
 
 
 Project &Project::GetInstance() {
-	static Project projectInstance;
+    static Project projectInstance;
 
-	return projectInstance;
+    return projectInstance;
 }
 
 void Project::OpenProject(std::string projectFilePath) {
@@ -89,4 +95,22 @@ void Project::SaveProjectAs(std::string newProjectDirPath) {
 	if (newTask->GetStatus() == TaskStatus::Finished) {
 		this->status = ProjectStatus::ProjectSaved;
 	}
+}
+
+
+
+void Project::ImportFile(std::string filePath) {
+
+   // TODO: Create a new Task to import and cache file
+
+   Content newFile;
+   newFile.Type = FileType::Video;
+   newFile.FileHash = File::CalcFileHash(filePath);
+   newFile.FilePath = filePath;
+
+   this->currProject->GetProjectHeaderData().ContentCollection.push_back(std::move(newFile));
+
+   BOOST_LOG_TRIVIAL(info) << "Imported file: " << filePath;
+   BOOST_LOG_TRIVIAL(info) << "File hash: " << newFile.FileHash;
+
 }

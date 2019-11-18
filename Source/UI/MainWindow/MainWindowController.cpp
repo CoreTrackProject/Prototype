@@ -1,11 +1,14 @@
 #include "MainWindowController.h"
 #include "Project/Project.h"
 
+#include "Editor/TrackerEd/TrackerEdController.h"
+
 #include <imgui.h>
 #include <boost/log/trivial.hpp>
 
 
 MainWindowController::MainWindowController() {}
+
 MainWindowController::~MainWindowController() {}
 
 
@@ -17,6 +20,7 @@ void MainWindowController::Init() {
 	this->view->SetNewProjectCallback(std::bind(&MainWindowController::NewProjectCallback, this, std::placeholders::_1));
 	this->view->SetSaveProjectCallback(std::bind(&MainWindowController::SaveProjectCallback, this));
 	this->view->SetSaveProjectAsCallback(std::bind(&MainWindowController::SaveProjectAsCallback, this, std::placeholders::_1));
+    this->view->SetOpenNewTrackerEdInstanceCallback(std::bind(&MainWindowController::OpenNewTrackerEdInstanceCallback, this));
 }
 
 void MainWindowController::DeInit() {
@@ -25,6 +29,11 @@ void MainWindowController::DeInit() {
 
 void MainWindowController::Render() {
 	this->view->Render();
+
+    for(int i = 0; i < this->editorCollection.size(); i++) {
+        this->editorCollection.at(i)->Render();
+    }
+
 }
 
 void MainWindowController::OpenProjectCallback(std::string filePath) {
@@ -50,4 +59,13 @@ void MainWindowController::SaveProjectCallback() {
 
 void MainWindowController::SaveProjectAsCallback(std::string projectFilePath) {
     Project::GetInstance().SaveProjectAs(projectFilePath);
+}
+
+void MainWindowController::OpenNewTrackerEdInstanceCallback() {
+
+    std::shared_ptr<TrackerEdController> ed = std::make_shared<TrackerEdController>();
+
+    ed->Init();
+
+    this->editorCollection.push_back(std::move(ed));
 }

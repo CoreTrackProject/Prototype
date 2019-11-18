@@ -1,0 +1,9 @@
+set(SRC
+	${CMAKE_CURRENT_SOURCE_DIR}/Image.h
+	${CMAKE_CURRENT_SOURCE_DIR}/Image.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/File.h
+	${CMAKE_CURRENT_SOURCE_DIR}/File.cpp
+)
+
+add_source(${SRC})
+

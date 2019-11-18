@@ -176,10 +176,12 @@ void WindowManager::glEndFrame(GLFWwindow *window) {
 	glfwSwapBuffers(window);
 	glFlush();
 
-	static int frameCount = 0;
+    /*
+     static int frameCount = 0;
 	static double currentTime = glfwGetTime();
 	static double previousTime = currentTime;
 	static char title[256];
+
 
 	frameCount++;
 	currentTime = glfwGetTime();
@@ -189,5 +191,6 @@ void WindowManager::glEndFrame(GLFWwindow *window) {
 		glfwSetWindowTitle(window, title);
 		frameCount = 0;
 		previousTime = currentTime;
-	}
+    }*/
+
 }

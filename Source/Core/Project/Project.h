@@ -20,14 +20,12 @@ private:
 
 	ProjectStatus status = ProjectStatus::NoProjectLoaded;
 
-private:
-	Project();
-
 public:
 	~Project();
+    Project();
 
-	Project(Project const&)        = delete;
-	void operator=(Project const&) = delete;
+    //Project(Project const&)        = delete;
+    //void operator=(Project const&) = delete;
 
 	static Project &GetInstance();
 
@@ -38,6 +36,9 @@ public:
 
 	void SaveProject();
 	void SaveProjectAs(std::string newProjectDirPath);
+
+
+    void ImportFile(std::string filePath);
 
 
 };

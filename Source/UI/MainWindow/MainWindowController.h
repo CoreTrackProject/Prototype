@@ -5,12 +5,15 @@
 #include "MainWindowModel.h"
 
 #include <memory>
+#include <vector>
 
 class MainWindowController : public IEditorController {
 
 private:
 	std::shared_ptr<MainWindowView> view;
 	MainWindowModel model;
+
+    std::vector<std::shared_ptr<IEditorController>> editorCollection;
 
 public:
 	MainWindowController();
@@ -25,5 +28,6 @@ public:
 	void NewProjectCallback(std::string newProjectName);
 	void SaveProjectCallback();
     void SaveProjectAsCallback(std::string projectFilePath);
+    void OpenNewTrackerEdInstanceCallback();
 
 };

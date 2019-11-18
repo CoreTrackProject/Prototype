@@ -23,8 +23,9 @@ find_package(OpenCV REQUIRED)
 find_package(glfw3 CONFIG REQUIRED)
 find_package(unofficial-nativefiledialog CONFIG REQUIRED)
 find_package(Boost REQUIRED filesystem log serialization)
+#find_package(xxhash REQUIRED)
 
-
+find_library(XXHASH_LIBRARY NAMES xxhash)
 include(CMake/Utils.cmake)
 
 
@@ -103,9 +104,10 @@ target_link_libraries(
     ${BUILD_TARGET}
     ${OPENGL_LIBRARIES}
     ${OpenCV_LIBS}
-	${Boost_LIBRARIES}
+    ${Boost_LIBRARIES}
     glfw
-	unofficial::nativefiledialog::nfd
+    unofficial::nativefiledialog::nfd
+    ${XXHASH_LIBRARY}
 )
 
 # Install the built executable into (prefix)/bin

@@ -1,13 +1,9 @@
 #include "MainWindowView.h"
-
 #include "Project/Project.h"
 
 #include <nfd.h>
 #include <boost/log/trivial.hpp>
-
-
 #include <boost/predef.h>
-
 #include <iostream>
 
 MainWindowView::MainWindowView(MainWindowModel &mainWndModel) : model(mainWndModel) {
@@ -100,9 +96,7 @@ void MainWindowView::Init() {
 
 void MainWindowView::Render() {
 
-#ifdef _DEBUG
-	ImGui::ShowDemoWindow();
-#endif
+    ImGui::ShowDemoWindow();
 
 	this->drawToolbar();
     //this->drawNewProjectDialog();
@@ -131,6 +125,9 @@ void MainWindowView::SetSaveProjectAsCallback(std::function<void(std::string)> s
 	this->saveProjectAsCallback = saveProjectAsCallback;
 }
 
+void MainWindowView::SetOpenNewTrackerEdInstanceCallback(std::function<void ()> openNewTrackerEdInstanceCallback) {
+    this->openNewTrackerEdInstanceCallback = openNewTrackerEdInstanceCallback;
+}
 
 
 void MainWindowView::drawToolbar() {
@@ -191,7 +188,7 @@ void MainWindowView::drawToolbar() {
 		if (ImGui::BeginMenu("Editor"))
 		{
 			if (ImGui::MenuItem("Tracker Editor", "")) {
-			
+                this->openNewTrackerEdInstanceCallback();
 			}
 
 			ImGui::EndMenu();
@@ -210,7 +207,6 @@ void MainWindowView::drawToolbar() {
 		ImGui::EndMainMenuBar();
 	}
 }
-
 
 void MainWindowView::openProject() {
 

@@ -11,14 +11,12 @@ class TaskScheduler {
 private:
 	std::vector<std::shared_ptr<ITask>> taskCollection;
 
-private:
-	TaskScheduler();
-
 public:
+    TaskScheduler();
 	~TaskScheduler();
 
-	TaskScheduler(TaskScheduler const&)  = delete;
-	void operator=(TaskScheduler const&) = delete;
+    //TaskScheduler(TaskScheduler const&)  = delete;
+    //void operator=(TaskScheduler const&) = delete;
 
 	static TaskScheduler &GetInstance();
 
