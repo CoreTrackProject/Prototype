@@ -4,6 +4,7 @@
 
 #include <string>
 #include <memory>
+#include <mutex>
 
 enum class ProjectStatus {
 	ProjectNotSaved, // Not saved in terms of changes
@@ -16,16 +17,16 @@ class Project {
 
 private:
 	std::string currProjectPath = "";
-	std::shared_ptr<ProjectHeader> currProject;
+	std::shared_ptr<ProjectHeader> currProjectHeader;
 
 	ProjectStatus status = ProjectStatus::NoProjectLoaded;
+	
+	std::mutex projectMutex;
+	
 
 public:
+	Project();
 	~Project();
-    Project();
-
-    //Project(Project const&)        = delete;
-    //void operator=(Project const&) = delete;
 
 	static Project &GetInstance();
 
