@@ -18,9 +18,7 @@ class Project {
 private:
 	std::string currProjectPath = "";
 	std::shared_ptr<ProjectHeader> currProjectHeader;
-
 	ProjectStatus status = ProjectStatus::NoProjectLoaded;
-	
 	std::mutex projectMutex;
 	
 
@@ -33,13 +31,15 @@ public:
 	ProjectStatus GetProjectStatus();
 
 	void OpenProject(std::string projectPath);
+	
 	void NewProject(std::string projectName);
 
 	void SaveProject();
+	
 	void SaveProjectAs(std::string newProjectDirPath);
-
-
+	
     void ImportFile(std::string filePath);
 
+	std::shared_ptr<ProjectHeader> GetProjectHeader();
 
 };

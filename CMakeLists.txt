@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.5)
 
-set(CMAKE_TOOLCHAIN_FILE "./ThirdParty/vcpkg/scripts/buildsystems/vcpkg.cmake")
+set(CMAKE_TOOLCHAIN_FILE "C:/vcpkg/scripts/buildsystems/vcpkg.cmake")
 
 set(BUILD_TARGET "CoreTrack")
 
@@ -23,6 +23,7 @@ find_package(OpenCV REQUIRED)
 find_package(glfw3 CONFIG REQUIRED)
 find_package(unofficial-nativefiledialog CONFIG REQUIRED)
 find_package(Boost REQUIRED filesystem log serialization)
+find_package(GLEW REQUIRED)
 #find_package(xxhash REQUIRED)
 
 find_library(XXHASH_LIBRARY NAMES xxhash)
@@ -39,7 +40,7 @@ set(INC
 	${CMAKE_CURRENT_SOURCE_DIR}/ThirdParty/imgui-node-editor/ThirdParty/imgui
 	${CMAKE_CURRENT_SOURCE_DIR}/ThirdParty/imgui-node-editor/Examples/Common/BlueprintUtilities/Include
 	${CMAKE_CURRENT_SOURCE_DIR}/ThirdParty/imgui-node-editor/Examples/Common/BlueprintUtilities/Source
-	${CMAKE_CURRENT_SOURCE_DIR}/ThirdParty/imgui-node-editor/ThirdParty/gl3w/Include
+	#${CMAKE_CURRENT_SOURCE_DIR}/ThirdParty/imgui-node-editor/ThirdParty/gl3w/Include
 	${CMAKE_CURRENT_SOURCE_DIR}/ThirdParty/imgui-node-editor/ThirdParty/stb_image
 	${CMAKE_CURRENT_SOURCE_DIR}/ThirdParty/imgui-node-editor/Examples/Common/Application/Source/GLFW
 )
@@ -59,7 +60,7 @@ set(SRC
 
 
    ${CMAKE_CURRENT_SOURCE_DIR}/ThirdParty/imgui-node-editor/ThirdParty/stb_image/stb_image.h
-   ${CMAKE_CURRENT_SOURCE_DIR}/ThirdParty/imgui-node-editor/ThirdParty/gl3w/Source/gl3w.c
+   #${CMAKE_CURRENT_SOURCE_DIR}/ThirdParty/imgui-node-editor/ThirdParty/gl3w/Source/gl3w.c
    ${CMAKE_CURRENT_SOURCE_DIR}/ThirdParty/imgui-node-editor/Examples/Common/Application/Source/GLFW/imgui_impl_glfw_gl3.cpp
    
    # imgui-node-editor
@@ -108,6 +109,7 @@ target_link_libraries(
     glfw
     unofficial::nativefiledialog::nfd
     ${XXHASH_LIBRARY}
+	GLEW::GLEW
 )
 
 # Install the built executable into (prefix)/bin

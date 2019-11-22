@@ -3,7 +3,7 @@
 #include <string>
 #include <vector>
 
-#include <boost/uuid/uuid.hpp>
+#include <mutex>
 
 enum class FileType {
 	Image,
@@ -32,6 +32,8 @@ private:
 	std::string projectPath;
 	ProjectHeaderData data;
 	
+	std::mutex projectHeaderMutex;
+
 public:
 	ProjectHeader();
 	ProjectHeader(ProjectHeaderData data);
