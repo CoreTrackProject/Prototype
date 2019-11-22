@@ -1,6 +1,6 @@
 #include "WindowManager.h"
 
-#include <GL/gl3w.h>
+#include <GL/glew.h>
 #include <GLFW/glfw3.h>
 
 #include "roboto_mono_embed.inc.h"
@@ -72,10 +72,12 @@ void WindowManager::Init() {
 
 	}
 	
-	// Init gl3w
+	// Init glew
 	{
-		if (gl3wInit() != 0) {
-			BOOST_LOG_TRIVIAL(info) << "Failed to create OpenGL3 context.";
+		//glewExperimental = true; // Needed for core profile
+		if (glewInit() != GLEW_OK)
+		{
+			BOOST_LOG_TRIVIAL(info) << "Failed to initialize glew context.";
 			exit(EXIT_FAILURE);
 		}
 	}

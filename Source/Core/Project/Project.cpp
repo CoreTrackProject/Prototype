@@ -131,17 +131,21 @@ void Project::ImportFile(std::string filePath) {
 		return;
 	}
     
-	// TODO: Create a new Task to import and cache file
+	// TODO: Create a new Task to import and cache file and remove this method
 
    Content newFile;
-   newFile.Type = FileType::Video;
+   newFile.Type     = FileType::Video;
    newFile.FileHash = File::CalcFileHash(filePath);
    newFile.FilePath = filePath;
-
-   this->currProjectHeader->GetProjectHeaderData().ContentCollection.push_back(std::move(newFile));
 
    BOOST_LOG_TRIVIAL(info) << "Imported file: " << filePath;
    BOOST_LOG_TRIVIAL(info) << "File hash: " << newFile.FileHash;
 
+   this->currProjectHeader->GetProjectHeaderData().ContentCollection.push_back(std::move(newFile));
+
    this->projectMutex.unlock();
+}
+
+std::shared_ptr<ProjectHeader> Project::GetProjectHeader() {
+	return this->currProjectHeader;
 }

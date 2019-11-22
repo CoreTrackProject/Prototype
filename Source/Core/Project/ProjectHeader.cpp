@@ -11,7 +11,11 @@ std::string ProjectHeader::GetProjectPath() {
 }
 
 void ProjectHeader::SetProjectPath(std::string projectPath) {
+	if (!this->projectHeaderMutex.try_lock()) {
+		return;
+	}
 	this->projectPath = projectPath;
+	this->projectHeaderMutex.unlock();
 }
 
 ProjectHeaderData ProjectHeader::GetProjectHeaderData() {
@@ -19,5 +23,9 @@ ProjectHeaderData ProjectHeader::GetProjectHeaderData() {
 }
 
 void ProjectHeader::SetProjectHeaderData(ProjectHeaderData data) {
+	if (!this->projectHeaderMutex.try_lock()) {
+		return;
+	}
 	this->data = data;
+	this->projectHeaderMutex.unlock();
 }
