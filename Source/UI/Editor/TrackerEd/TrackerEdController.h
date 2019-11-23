@@ -11,6 +11,11 @@ private:
     TrackerEdView  view;
     TrackerEdModel model;
 
+
+    void addClipCallback(std::string filePath);
+    void cacheVideo(std::string filePath);
+    void detectORB(int frameIdx);
+
 public:
     TrackerEdController();
     ~TrackerEdController();
@@ -19,6 +24,8 @@ public:
     void Init();
     void DeInit();
     void Render();
+
+
 
 
 };
