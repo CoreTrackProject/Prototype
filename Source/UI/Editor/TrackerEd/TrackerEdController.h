@@ -14,7 +14,10 @@ private:
 
     void addClipCallback(std::string filePath);
     void cacheVideo(std::string filePath);
-    void detectORB(int frameIdx);
+	ImTextureID matToTexture(cv::Mat frame);
+
+    void detectORBCallback();
+	void generateOverlay(int frameIdx);
 
 public:
     TrackerEdController();
