@@ -4,7 +4,7 @@
 
 #include <string>
 
-class File {
+class FileUtils {
 
 public:
     // From example: https://github.com/ocornut/imgui/wiki/Image-Loading-and-Displaying-Examples

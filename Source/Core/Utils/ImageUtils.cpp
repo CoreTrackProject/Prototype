@@ -1,7 +1,7 @@
-#include "Image.h"
+#include "ImageUtils.h"
 
 
-bool Image::LoadTextureFromFile(const char* filename, GLuint* out_texture, int* out_width, int* out_height)
+bool ImageUtils::LoadTextureFromFile(const char* filename, GLuint* out_texture, int* out_width, int* out_height)
 {
     // Load from file
     int image_width = 0;

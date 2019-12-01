@@ -4,6 +4,3 @@
 [submodule "ThirdParty/imgui-node-editor"]
 	path = ThirdParty/imgui-node-editor
 	url = https://github.com/thedmd/imgui-node-editor.git
-[submodule "ThirdParty/vcpkg"]
-	path = ThirdParty/vcpkg
-	url = https://github.com/CoreTrackProject/vcpkg.git

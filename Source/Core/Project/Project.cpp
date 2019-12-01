@@ -1,5 +1,5 @@
 #include "Project.h"
-#include "Utils/File.h"
+#include "Utils/FileUtils.h"
 
 
 #include "Task/ProjectIO/ProjectLoaderTask.h"
@@ -135,7 +135,7 @@ void Project::ImportFile(std::string filePath) {
 
    Content newFile;
    newFile.Type     = FileType::Video;
-   newFile.FileHash = File::CalcFileHash(filePath);
+   newFile.FileHash = FileUtils::CalcFileHash(filePath);
    newFile.FilePath = filePath;
 
    BOOST_LOG_TRIVIAL(info) << "Imported file: " << filePath;

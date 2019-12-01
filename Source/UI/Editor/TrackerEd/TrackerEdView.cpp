@@ -1,6 +1,6 @@
 #include "TrackerEdView.h"
 #include "Project/Project.h"
-#include "Utils/File.h"
+#include "Utils/FileUtils.h"
 
 #include <stb_image.h>
 
@@ -28,12 +28,12 @@ void TrackerEdView::DeInit(){
 }
 
 void TrackerEdView::SetAddClipCallback(std::function<void(std::string)> addClipCallback) {
-	this->addClipCallback = addClipCallback;
+    this->addClipCallback = addClipCallback;
 }
 
 
 void TrackerEdView::SetDetectOrbCallback(std::function<void()> detectOrbCallback) {
-	this->detectOrbCallback = detectOrbCallback;
+    this->detectOrbCallback = detectOrbCallback;
 }
 
 
@@ -41,55 +41,56 @@ void TrackerEdView::drawToolbar() {
 
     if(ImGui::Button("+", ImVec2(32, 32))) {
         std::string filePath = "";
-        if(File::PickSingleFile(filePath)) {
+        if(FileUtils::PickSingleFile(filePath)) {
 
             this->addClipCallback(filePath);
-            //
-
-
-            //this->cacheVideo(filePath);
         }
     }
-	
-	ImGui::SameLine();
 
-	if (ImGui::Button("ORB", ImVec2(32, 32))) {
-		this->detectOrbCallback();
-	}
+    ImGui::SameLine();
 
-	ImGui::NewLine();
+    if (ImGui::Button("ORB", ImVec2(32, 32))) {
+        this->detectOrbCallback();
+    }
 
 
+    //ImGui::NewLine();
 
-    if (this->model.frameCollection.size() > 0) {
+    ImGui::Separator();
 
-		if (this->model.frameCollection[this->model.VideoSliderValue - 1].HasORB) {
-			ImGui::Image(
+    if (this->model.CurrVideo.HasFrames()) {
 
-				this->model.frameCollection[this->model.VideoSliderValue - 1].FeatureDrawOverlayTexture,
-				ImVec2(1280, 720)
-			);
-		}
-		else {
-			ImGui::Image(
+        ImGui::Image(
+            this->model.CurrVideo.GetTextureFrameByIdx(this->model.VideoSliderValue - 1),
+            ImVec2(1280, 720)
+            );
 
-				this->model.frameCollection[this->model.VideoSliderValue - 1].FrameAsTexture,
-				ImVec2(1280, 720)
-			);
-		}
+        //if (this->model.frameCollection[this->model.VideoSliderValue - 1].HasORB) {
+        //
+        //
+        //	ImGui::Image(
+        //		this->model.frameCollection[this->model.VideoSliderValue - 1].FeatureDrawOverlayTexture,
+        //		ImVec2(1280, 720)
+        //	);
+        //} else {
+        //	ImGui::Image(
+        //		this->model.frameCollection[this->model.VideoSliderValue - 1].FrameAsTexture,
+        //		ImVec2(1280, 720)
+        //	);
+        //}
 
-        
-		
-		ImGui::Separator();
+        ImGui::Separator();
 
-		ImGui::SliderInt(
-			"Video", 
+        ImGui::SliderInt(
+            "Video",
 			&this->model.VideoSliderValue, 
-			1, 
-			this->model.frameCollection.size()
-		);
+            1,
+            this->model.CurrVideo.GetFrameCount()
+            );
 
     }
+
+
 
 
     // ToDo: Draw line to separate the toolbar

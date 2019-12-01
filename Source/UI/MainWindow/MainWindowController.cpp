@@ -21,6 +21,7 @@ void MainWindowController::Init() {
 	this->view->SetSaveProjectCallback(std::bind(&MainWindowController::SaveProjectCallback, this));
 	this->view->SetSaveProjectAsCallback(std::bind(&MainWindowController::SaveProjectAsCallback, this, std::placeholders::_1));
     this->view->SetOpenNewTrackerEdInstanceCallback(std::bind(&MainWindowController::OpenNewTrackerEdInstanceCallback, this));
+
 }
 
 void MainWindowController::DeInit() {

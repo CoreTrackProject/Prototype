@@ -5,7 +5,7 @@
 #define STB_IMAGE_IMPLEMENTATION
 #include <stb_image.h>
 
-class Image {
+class ImageUtils {
 
 public:
     // From example: https://github.com/ocornut/imgui/wiki/Image-Loading-and-Displaying-Examples

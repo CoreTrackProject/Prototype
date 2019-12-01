@@ -1,4 +1,4 @@
-#include "File.h"
+#include "FileUtils.h"
 
 #include <nfd.h>
 #include <boost/log/trivial.hpp>
@@ -6,7 +6,7 @@
 #include <xxhash.h>
 #include <fstream>
 
-bool File::PickSingleFile(std::string &out_filePath) {
+bool FileUtils::PickSingleFile(std::string &out_filePath) {
 
     nfdchar_t  *filePath = nullptr;
     nfdresult_t result = NFD_OpenDialog(nullptr, nullptr, &filePath );
@@ -29,7 +29,7 @@ bool File::PickSingleFile(std::string &out_filePath) {
 
 }
 
-std::string File::CalcFileHash(std::string filePath) {
+std::string FileUtils::CalcFileHash(std::string filePath) {
 
     /* create a hash state */
     XXH64_state_t* const state = XXH64_createState();

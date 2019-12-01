@@ -1,4 +1,5 @@
 add_subdirectory(ProjectIO)
+add_subdirectory(Video)
 
 set(SRC
 	${CMAKE_CURRENT_SOURCE_DIR}/ITask.hpp

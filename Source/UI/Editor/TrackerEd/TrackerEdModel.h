@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Data/Video.h"
 
 #include <opencv2/core.hpp>
 #include <opencv2/videoio.hpp>
@@ -8,10 +9,12 @@
 #include <imgui.h>
 
 
+
+
 struct VideoFrameOCV {
 	ImTextureID FrameAsTexture;
 
-	cv::Mat Frame;
+    cv::Mat Frame;
 	cv::Mat FrameGray;
 	cv::Mat FeatureDrawOverlay;
 	ImTextureID FeatureDrawOverlayTexture;
@@ -27,12 +30,17 @@ struct FeatureTrack {
 	std::vector<cv::Point2d> TrackerPath;
 };
 
+
+
 class TrackerEdModel {
+
 public:
     int VideoSliderValue = 1;
     int CurrFrameArrIdx = 0;
 
-	std::vector<VideoFrameOCV> frameCollection;
+    std::vector<VideoFrameOCV> frameCollection;
+
+    Video CurrVideo;
 
 public:
     TrackerEdModel();

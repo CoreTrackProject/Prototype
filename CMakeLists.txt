@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.5)
 
-set(CMAKE_TOOLCHAIN_FILE "C:/vcpkg/scripts/buildsystems/vcpkg.cmake")
+set(CMAKE_TOOLCHAIN_FILE "./ThirdParty/vcpkg-2019.10/scripts/buildsystems/vcpkg.cmake")
 
 set(BUILD_TARGET "CoreTrack")
 
@@ -17,18 +17,25 @@ set(CMAKE_CXX_STANDARD          14)
 set(CMAKE_CXX_STANDARD_REQUIRED YES)
 
 
-
-find_package(OpenGL REQUIRED)
 find_package(OpenCV REQUIRED)
 find_package(glfw3 CONFIG REQUIRED)
 find_package(unofficial-nativefiledialog CONFIG REQUIRED)
 find_package(Boost REQUIRED filesystem log serialization)
 find_package(GLEW REQUIRED)
-#find_package(xxhash REQUIRED)
+
 
 find_library(XXHASH_LIBRARY NAMES xxhash)
 include(CMake/Utils.cmake)
 
+find_path( AVCODEC_INCLUDE_DIR libavcodec/avcodec.h )
+find_library( AVCODEC_LIBRARY avcodec )
+find_library( AVDEVICE_LIBRARY avdevice )
+find_library( AVFILTER_LIBRARY avfilter )
+find_library( AVFORMAT_LIBRARY avformat )
+find_library( AVRESAMPLE_LIBRARY avresample )
+find_library( AVUTIL_LIBRARY avutil )
+find_library( AVUTIL_SW_RESAMPLE swresample )
+find_library( AVUTIL_SW_SCALE swscale )
 
 set_property(GLOBAL PROPERTY source_list)
 set_property(GLOBAL PROPERTY include_list)
@@ -86,12 +93,14 @@ add_subdirectory(Source)
 
 add_include(${Boost_INCLUDE_DIRS})
 
+add_include("./ThirdParty/libmv")
+add_include(${AVCODEC_INCLUDE_DIR})
+
 get_property(local_include_list GLOBAL PROPERTY include_list)
-include_directories(${local_include_list} )
-
-
+include_directories(${local_include_list})
 
 get_property(local_src_list GLOBAL PROPERTY source_list)
+
 add_executable(
    ${BUILD_TARGET}
    ${local_src_list}
@@ -101,6 +110,8 @@ source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR} FILES ${local_src_list})
 
 add_definitions(${Boost_LIB_DIAGNOSTIC_DEFINITIONS})
 
+add_subdirectory("./ThirdParty/libmv")
+
 target_link_libraries(
     ${BUILD_TARGET}
     ${OPENGL_LIBRARIES}
@@ -109,7 +120,21 @@ target_link_libraries(
     glfw
     unofficial::nativefiledialog::nfd
     ${XXHASH_LIBRARY}
-	GLEW::GLEW
+    GLEW::GLEW
+    libmv
+
+    # FFMPEG related libs
+
+    ${AVFORMAT_LIBRARY}
+    ${AVCODEC_LIBRARY}
+    ${AVUTIL_LIBRARY}
+    ${AVUTIL_SW_RESAMPLE}
+    ${AVUTIL_SW_SCALE}
+    ${AVDEVICE_LIBRARY}
+    ${AVFILTER_LIBRARY}
+    ${AVRESAMPLE_LIBRARY}
+
+
 )
 
 # Install the built executable into (prefix)/bin

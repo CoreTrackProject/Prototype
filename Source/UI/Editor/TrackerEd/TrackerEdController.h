@@ -14,7 +14,6 @@ private:
 
     void addClipCallback(std::string filePath);
     void cacheVideo(std::string filePath);
-	ImTextureID matToTexture(cv::Mat frame);
 
     void detectORBCallback();
 	void generateOverlay(int frameIdx);
