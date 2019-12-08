@@ -8,12 +8,23 @@
 
 #include <imgui.h>
 
+#include <cmath>
 
 struct TrackMarker {
 
-    int x, y;
-    int width, height;
+    int CenterX, CenterY;
+
+    int Width, Height;
+
     bool Selected;
+
+    cv::Rect GetOCVRect() {
+        return cv::Rect(
+            this->CenterX - round((this->Width / 2)),
+            this->CenterY - round((this->Height / 2)),
+            this->Width,
+            this->Height);
+    }
 
 };
 

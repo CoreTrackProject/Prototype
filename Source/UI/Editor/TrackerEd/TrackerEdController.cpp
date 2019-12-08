@@ -15,7 +15,7 @@
 #include <boost/filesystem.hpp>
 
 
-#include <libmv/tracking/trklt_region_tracker.h>
+#include <libmv/tracking/klt_region_tracker.h>
 
 
 
@@ -24,7 +24,7 @@ TrackerEdController::TrackerEdController() : view(model) {
 
     this->view.SetAddClipCallback(std::bind(&TrackerEdController::addClipCallback, this, std::placeholders::_1));
     this->view.SetDetectOrbCallback(std::bind(&TrackerEdController::detectORBCallback, this));
-    this->view.SetAddTrackerCallback(std::bind(&TrackerEdController::addTrackerCallback, this));
+    this->view.SetTrackerMarkersCallback(std::bind(&TrackerEdController::trackMarkersCallback, this));
 
 
 
@@ -82,23 +82,55 @@ void TrackerEdController::detectORBCallback() {
 
 }
 
-void TrackerEdController::addTrackerCallback() {
+void TrackerEdController::trackMarkersCallback() {
 
-    libmv::TrkltRegionTracker tracker;
+    libmv::KltRegionTracker *tracker = new libmv::KltRegionTracker();
 
     // Convert cv::Mat to float array
 
     //cv::Mat firstImg = VideoUtils::MatToFloatArray(this->model.CurrVideo.GetFrameByIdx(0));
     //cv::Mat secImg = this->model.CurrVideo.GetFrameByIdx(0);
 
-
     //libmv::FloatImage img1 = VideoUtils::MatToFloatImage(this->model.CurrVideo.GetFrameByIdx(0));
     //libmv::FloatImage img2 = VideoUtils::MatToFloatImage(this->model.CurrVideo.GetFrameByIdx(1));
 
     // FloatImage RGB
 
-    libmv::FloatImage currImg;
-    libmv::FloatImage lastImg;
+
+    for(TrackMarker marker : this->model.TrackMarkerCollection) {
+
+        libmv::FloatImage currImg;
+        libmv::FloatImage lastImg;
+
+        double newPosX = 0;
+        double newPosY = 0;
+
+
+        for(int frameIdx = 0; frameIdx < this->model.CurrVideo.GetFrameCount(); frameIdx++) {
+            cv::Mat frameMat = this->model.CurrVideo.GetFrameByIdx(frameIdx, true).clone();
+
+
+            cv::Mat frameRect = frameMat(marker.GetOCVRect());
+            libmv::FloatImage currImage = VideoUtils::MatToFloatImage(frameRect);
+
+            if(frameIdx > 0) {
+
+                if(tracker->Track(currImg, lastImg, marker.CenterX, marker.CenterY, &newPosX, &newPosY)) {
+                    BOOST_LOG_TRIVIAL(info) << "Track successful moving to next frame " << frameIdx;
+
+
+                } else {
+                    break;
+                }
+
+            }
+
+            lastImg = currImg;
+        }
+    }
+
+
+
 
     double x       = 603;
     double y       = 835;
@@ -107,7 +139,7 @@ void TrackerEdController::addTrackerCallback() {
     cv::Mat currMat;
 
 
-    for(int i = 0; i < this->model.CurrVideo.GetFrameCount(); i++) {
+/*    for(int i = 0; i < this->model.CurrVideo.GetFrameCount(); i++) {
 
         currMat = this->model.CurrVideo.GetFrameByIdx(i, true).clone();
         currImg = VideoUtils::MatToFloatImage(currMat);
@@ -128,7 +160,7 @@ void TrackerEdController::addTrackerCallback() {
         }
 
         lastImg = currImg;
-    }
+    }*/
 
 }
 

@@ -20,7 +20,7 @@ private:
 
     void detectORBCallback();
 	void generateOverlay(int frameIdx);
-    void addTrackerCallback();
+    void trackMarkersCallback();
 
 public:
     TrackerEdController();

@@ -9,6 +9,8 @@
 
 #include <boost/log/trivial.hpp>
 
+#include <cmath>
+
 TrackerEdView::TrackerEdView(TrackerEdModel &model) : model(model) {}
 
 TrackerEdView::~TrackerEdView() {}
@@ -41,8 +43,8 @@ void TrackerEdView::SetDetectOrbCallback(std::function<void()> detectOrbCallback
     this->detectOrbCallback = detectOrbCallback;
 }
 
-void TrackerEdView::SetAddTrackerCallback(std::function<void ()> addTrackerCallback) {
-    this->addTrackerCallback = addTrackerCallback;
+void TrackerEdView::SetTrackerMarkersCallback(std::function<void ()> trackMarkersCallback) {
+    this->trackMarkersCallback = trackMarkersCallback;
 }
 
 
@@ -89,6 +91,12 @@ void TrackerEdView::drawToolbar() {
             return;
             //this->addTrackerCallback();
         }
+
+        if (ImGui::Button(">>", ImVec2(32, 32))) {
+            this->trackMarkersCallback();
+            return;
+        }
+
     }
 
     if(this->currState == TrackerEdState::AddTracker) {
@@ -123,8 +131,8 @@ void TrackerEdView::drawBody() {
         // Draw track markers
         for(TrackMarker marker : this->model.TrackMarkerCollection) {
 
-            ImVec2 markerPos = ImVec2(pos.x + this->offset.x + marker.x,
-                                      pos.y + this->offset.y + marker.y);
+            ImVec2 markerPos = ImVec2(pos.x + this->offset.x + marker.CenterX,
+                                      pos.y + this->offset.y + marker.CenterY);
 
 
             ImGui::GetWindowDrawList()->AddCircle(markerPos, 3, IM_COL32(255, 255, 255, 255));
@@ -148,6 +156,7 @@ void TrackerEdView::drawBody() {
 
                 ImVec2 mPos = ImGui::GetMousePos();
 
+                // Dragging
                 if(io->MouseReleased[0]) {
 
                     if(mPos.x  >= pos.x &&
@@ -164,6 +173,12 @@ void TrackerEdView::drawBody() {
                         return;
                     }
                 }
+
+                // Zooming (TODO)
+                if(io->MouseWheel != 0.0f) {
+                    //BOOST_LOG_TRIVIAL(debug) << "Mouse wheel used: " << io->MouseWheel;
+                }
+
             }
         }
 
@@ -189,10 +204,10 @@ void TrackerEdView::addTrackMarker(int x, int y) {
 
 
     TrackMarker newMarker;
-    newMarker.width  = 100;
-    newMarker.height = 100;
-    newMarker.x      = x;
-    newMarker.y      = y;
+    newMarker.Width  = 100;
+    newMarker.Height = 100;
+    newMarker.CenterX      = x;
+    newMarker.CenterY      = y;
     newMarker.Selected = true;
 
 
@@ -201,3 +216,4 @@ void TrackerEdView::addTrackMarker(int x, int y) {
 
 
 }
+

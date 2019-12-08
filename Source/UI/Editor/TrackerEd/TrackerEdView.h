@@ -40,7 +40,7 @@ private:
 public:
 	std::function<void(std::string)> addClipCallback;
     std::function<void()> detectOrbCallback;
-    std::function<void()> addTrackerCallback;
+    std::function<void()> trackMarkersCallback;
 
 public:
 	TrackerEdView(TrackerEdModel &model);
@@ -52,12 +52,14 @@ public:
 
 	void SetAddClipCallback(std::function<void(std::string)> addClipCallback);
 	void SetDetectOrbCallback(std::function<void()> detectOrbCallback);
-    void SetAddTrackerCallback(std::function<void()> addTrackerCallback);
+    void SetTrackerMarkersCallback(std::function<void()> trackMarkersCallback);
 
 private:
     void drawToolbar();
     void drawBody();
 
     void addTrackMarker(int x, int y);
+
+
 
 };
