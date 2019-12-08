@@ -52,7 +52,6 @@ int VideoUtils::GetVideoFrameCount(std::string filePath) {
     return vstrm->nb_frames;
 }
 
-
 GLuint VideoUtils::MatToGLuint(cv::Mat frame) {
     GLuint videoFrameGlTexture;
     //cv::Mat frameBGR;
@@ -71,16 +70,47 @@ GLuint VideoUtils::MatToGLuint(cv::Mat frame) {
 
     //cv::cvtColor(frame, frameBGR, cv::COLOR_RGB2BGR);
 
-    glTexImage2D(GL_TEXTURE_2D,         // Type of texture
-                 0,                   // Pyramid level (for mip-mapping) - 0 is the top level
-                 GL_RGB,              // Internal colour format to convert to
-                 frame.cols,          // Image width  i.e. 640 for Kinect in standard mode
-                 frame.rows,          // Image height i.e. 480 for Kinect in standard mode
-                 0,                   // Border width in pixels (can either be 1 or 0)
-                 GL_RGB,              // Input image format (i.e. GL_RGB, GL_RGBA, GL_BGR etc.)
-                 GL_UNSIGNED_BYTE,    // Image data type
+    glTexImage2D(GL_TEXTURE_2D,    // Type of texture
+                 0,                // Pyramid level (for mip-mapping) - 0 is the top level
+                 GL_RGB,           // Internal colour format to convert to
+                 frame.cols,       // Image width  i.e. 640 for Kinect in standard mode
+                 frame.rows,       // Image height i.e. 480 for Kinect in standard mode
+                 0,                // Border width in pixels (can either be 1 or 0)
+                 GL_RGB,           // Input image format (i.e. GL_RGB, GL_RGBA, GL_BGR etc.)
+                 GL_UNSIGNED_BYTE, // Image data type
                  frame.ptr()
-                 );        // The actual image data itself
+                 );                // The actual image data itself
 
     return videoFrameGlTexture;
+}
+
+libmv::FloatImage VideoUtils::MatToFloatImage(cv::Mat &image) {
+
+    libmv::FloatImage result(image.cols, image.rows);
+    for (int i = 0; i < image.rows; ++i) {
+        for (int j = 0; j < image.cols; ++j) {
+            result.Fill(image.at<unsigned char>(i, j));
+        }
+    }
+    return result;
+
+
+
+   /* cv::Mat dst(image.cols, image.rows, CV_32F);
+    image.convertTo(dst, CV_32F);
+
+    //std::vector<float> data;
+    //dst.copyTo(data);
+
+    std::vector<float> vec = image.isContinuous() ? dst : dst.clone();
+
+    libmv::FloatImage result(
+        vec.data(),
+        image.cols,
+        image.rows
+        );
+
+    return result;*/
+
+
 }

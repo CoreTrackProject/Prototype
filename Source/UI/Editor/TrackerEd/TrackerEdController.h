@@ -5,6 +5,9 @@
 #include "TrackerEdView.h"
 #include "TrackerEdModel.h"
 
+
+#include <libmv/image/image.h>
+
 class TrackerEdController : public IEditorController {
 
 private:
@@ -17,6 +20,7 @@ private:
 
     void detectORBCallback();
 	void generateOverlay(int frameIdx);
+    void addTrackerCallback();
 
 public:
     TrackerEdController();

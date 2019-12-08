@@ -20,7 +20,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED YES)
 find_package(OpenCV REQUIRED)
 find_package(glfw3 CONFIG REQUIRED)
 find_package(unofficial-nativefiledialog CONFIG REQUIRED)
-find_package(Boost REQUIRED filesystem log serialization)
+find_package(Boost REQUIRED filesystem log_setup log serialization )
 find_package(GLEW REQUIRED)
 
 

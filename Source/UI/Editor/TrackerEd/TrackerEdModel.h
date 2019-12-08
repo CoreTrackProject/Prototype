@@ -9,6 +9,14 @@
 #include <imgui.h>
 
 
+struct TrackMarker {
+
+    int x, y;
+    int width, height;
+    bool Selected;
+
+};
+
 
 
 struct VideoFrameOCV {
@@ -38,7 +46,9 @@ public:
     int VideoSliderValue = 1;
     int CurrFrameArrIdx = 0;
 
-    std::vector<VideoFrameOCV> frameCollection;
+    std::vector<VideoFrameOCV> FrameCollection;
+
+    std::vector<TrackMarker> TrackMarkerCollection;
 
     Video CurrVideo;
 
