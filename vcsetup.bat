@@ -11,6 +11,6 @@ mkdir Target
 
 :cmake
 
-cmake.exe -G "Visual Studio 15 2017" -TLLVM -A x64 -BTarget -H. -DCMAKE_TOOLCHAIN_FILE="D:/vcpkg_latest/scripts/buildsystems/vcpkg.cmake"
+cmake.exe -G "Visual Studio 15 2017" -TLLVM -A x64 -BTarget -H.
 
 pause
