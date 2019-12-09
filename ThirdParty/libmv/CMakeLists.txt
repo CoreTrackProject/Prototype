@@ -193,5 +193,5 @@ set(SRC
 include_directories("${INC}")
 add_library(libmv STATIC "${SRC}")
 
-target_link_libraries(libmv PRIVATE png_static ZLIB::ZLIB gflags_static glog::glog Eigen3::Eigen) 
+target_link_libraries(libmv PRIVATE png ZLIB::ZLIB gflags_shared glog::glog Eigen3::Eigen) 
 
