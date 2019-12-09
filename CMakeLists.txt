@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.5)
 
-set(CMAKE_TOOLCHAIN_FILE "./ThirdParty/vcpkg-2019.10/scripts/buildsystems/vcpkg.cmake")
+set(CMAKE_TOOLCHAIN_FILE "./ThirdParty/vcpkg-2019.11/scripts/buildsystems/vcpkg.cmake")
 
 set(BUILD_TARGET "CoreTrack")
 
@@ -142,6 +142,7 @@ install(TARGETS ${BUILD_TARGET} DESTINATION bin)
 
 # [VisualStudio]
 if (WIN32)
+
   # Set `CoreTrack` as a startup project for VS IDE
   set_property(DIRECTORY PROPERTY VS_STARTUP_PROJECT ${BUILD_TARGET})
 
