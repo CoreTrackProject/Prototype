@@ -33,3 +33,5 @@
 
 Build/
 Target/
+.vs/
+ThirdParty/vcpkg*
