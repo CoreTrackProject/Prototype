@@ -34,7 +34,7 @@ private:
 
     TrackerEdState currState = TrackerEdState::Ready;
 
-    ImVec2 offset;
+    ImVec2 imgViewPos;
 
 
 public:

@@ -21,14 +21,14 @@ struct VideoFrame {
 
     bool IsCached = false;
 
-    GLuint FrameAsTexture;
+    //GLuint FrameAsTexture;
 
     cv::Mat Frame;
 
     void Clear() {
         this->IsCached = false;
         this->Frame.release();
-        glDeleteTextures(1, &this->FrameAsTexture);
+        //glDeleteTextures(1, &this->FrameAsTexture);
     }
 
 };
@@ -53,10 +53,13 @@ private:
 
     int startFrame, endFrame;
 
+    GLuint videoFrameTexture;
+
 private:
 
     void updateFrameCollection(int startFrame, int endFrame);
     void emptyCache();
+    void initVideoFrameTexture();
 
 public:
     Video();

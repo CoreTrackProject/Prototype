@@ -54,7 +54,6 @@ int VideoUtils::GetVideoFrameCount(std::string filePath) {
 
 GLuint VideoUtils::MatToGLuint(cv::Mat frame) {
     GLuint videoFrameGlTexture;
-    //cv::Mat frameBGR;
 
     glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
     glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
@@ -67,8 +66,6 @@ GLuint VideoUtils::MatToGLuint(cv::Mat frame) {
     // Set texture clamping method
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
-
-    //cv::cvtColor(frame, frameBGR, cv::COLOR_RGB2BGR);
 
     glTexImage2D(GL_TEXTURE_2D,    // Type of texture
                  0,                // Pyramid level (for mip-mapping) - 0 is the top level

@@ -48,8 +48,8 @@ void TrackerEdView::SetTrackerMarkersCallback(std::function<void ()> trackMarker
 }
 
 
-void TrackerEdView::drawToolbar() {
 
+void TrackerEdView::drawToolbar() {
 
     if(this->currState == TrackerEdState::AddTracker) {
 
@@ -80,7 +80,6 @@ void TrackerEdView::drawToolbar() {
         this->detectOrbCallback();
     }
 
-
     if(this->model.CurrVideo.HasFrames()) {
 
         ImGui::SameLine();
@@ -91,6 +90,8 @@ void TrackerEdView::drawToolbar() {
             return;
             //this->addTrackerCallback();
         }
+
+        ImGui::SameLine();
 
         if (ImGui::Button(">>", ImVec2(32, 32))) {
             this->trackMarkersCallback();
@@ -114,32 +115,70 @@ void TrackerEdView::drawBody() {
     if (this->model.CurrVideo.HasFrames()) {
 
         ImGui::BeginChildFrame(1, ImVec2(1280, 720));
+        ImVec2 panPanelPos = ImGui::GetCursorScreenPos();
 
-
-        ImVec2 pos = ImGui::GetCursorScreenPos();
         if (ImGui::IsItemActive() && ImGui::IsMouseDragging() && this->currState == TrackerEdState::Ready) {
-            this->offset.x += ImGui::GetIO().MouseDelta.x;
-            this->offset.y += ImGui::GetIO().MouseDelta.y;
+            this->imgViewPos.x += ImGui::GetIO().MouseDelta.x;
+            this->imgViewPos.y += ImGui::GetIO().MouseDelta.y;
         }
 
         ImGui::GetWindowDrawList()->AddImage(
             this->model.CurrVideo.GetTextureFrameByIdx(this->model.VideoSliderValue - 1),
-            ImVec2(pos.x + this->offset.x, pos.y + this->offset.y),
-            ImVec2(pos.x + this->offset.x + 1280, pos.y + this->offset.y + 720)
+            ImVec2(panPanelPos.x + this->imgViewPos.x, panPanelPos.y + this->imgViewPos.y),
+            ImVec2(panPanelPos.x + this->imgViewPos.x + 1280, panPanelPos.y + this->imgViewPos.y + 720)
             );
+
 
         // Draw track markers
         for(TrackMarker marker : this->model.TrackMarkerCollection) {
 
-            ImVec2 markerPos = ImVec2(pos.x + this->offset.x + marker.CenterX,
-                                      pos.y + this->offset.y + marker.CenterY);
+            int currFrameIdx = this->model.VideoSliderValue - 1;
+
+            if(marker.BeginFrame <= currFrameIdx &&
+                marker.EndFrame  >= currFrameIdx) {
 
 
-            ImGui::GetWindowDrawList()->AddCircle(markerPos, 3, IM_COL32(255, 255, 255, 255));
-            ImGui::GetWindowDrawList()->AddRect(
-                ImVec2(markerPos.x - 50, markerPos.y - 50),
-                ImVec2(markerPos.x + 50, markerPos.y + 50),
-                IM_COL32(255, 255, 255, 255));
+                // Display tracked marker
+                //
+                //-----------O------------  // Video Frames (O = Cursor of curr video frame)
+                //xxxxxxx--------xxxxxxxxx  // TrackMarker
+                //       ^      ^
+                // Begin Frame   End Frame
+                // Right Marker = MarkerCollection[CurrFrameIdx - Begin Frame]
+
+
+                TrackMarker currMarker;
+                int markerIdx = (this->model.VideoSliderValue - 1) - marker.BeginFrame;
+
+                if(marker.EndFrame > 0 && marker.Anim.size() > markerIdx) {
+                    currMarker = marker.Anim.at(markerIdx);
+                } else {
+                    currMarker = marker;
+                }
+
+                // Offset of the image view
+                ImVec2 offset = ImVec2(
+                    panPanelPos.x + this->imgViewPos.x,
+                    panPanelPos.y + this->imgViewPos.y);
+
+                // Top left corner of a trackmarker
+                ImVec2 markerTLCornerPosAbsolute = ImVec2(offset.x + currMarker.GetSearchArea().tl().x, offset.y + currMarker.GetSearchArea().tl().y);
+
+                ImGui::GetWindowDrawList()->AddRect(
+                    markerTLCornerPosAbsolute,
+                    ImVec2(offset.x + currMarker.GetSearchArea().br().x, offset.y + currMarker.GetSearchArea().br().y),
+                    IM_COL32(255, 255, 0, 255) // yellow
+                    );
+
+                ImGui::GetWindowDrawList()->AddRect(
+                    ImVec2(markerTLCornerPosAbsolute.x + currMarker.GetTrackArea().tl().x, markerTLCornerPosAbsolute.y + currMarker.GetTrackArea().tl().y),
+                    ImVec2(markerTLCornerPosAbsolute.x + currMarker.GetTrackArea().br().x, markerTLCornerPosAbsolute.y + currMarker.GetTrackArea().br().y),
+                    IM_COL32(0, 255, 255, 255)
+                    );
+
+            } // end if
+
+
         }
 
         ImGui::EndChildFrame();
@@ -159,14 +198,14 @@ void TrackerEdView::drawBody() {
                 // Dragging
                 if(io->MouseReleased[0]) {
 
-                    if(mPos.x  >= pos.x &&
-                        mPos.y >= pos.y &&
-                        mPos.x <= (pos.x + 1280) &&
-                        mPos.y <= (pos.y + 720)) {
+                    if(mPos.x  >= panPanelPos.x &&
+                        mPos.y >= panPanelPos.y &&
+                        mPos.x <= (panPanelPos.x + 1280) &&
+                        mPos.y <= (panPanelPos.y + 720)) {
 
 
-                        mPos.x -= (offset.x + pos.x);
-                        mPos.y -= (offset.y + pos.y);
+                        mPos.x -= (imgViewPos.x + panPanelPos.x);
+                        mPos.y -= (imgViewPos.y + panPanelPos.y);
 
                         this->addTrackMarker(mPos.x, mPos.y);
 
@@ -181,6 +220,9 @@ void TrackerEdView::drawBody() {
 
             }
         }
+
+
+
 
 
         ImGui::Separator();
@@ -203,13 +245,10 @@ void TrackerEdView::addTrackMarker(int x, int y) {
     BOOST_LOG_TRIVIAL(debug) << "Add track marker (" << x << ", " <<  y << ")";
 
 
-    TrackMarker newMarker;
-    newMarker.Width  = 100;
-    newMarker.Height = 100;
-    newMarker.CenterX      = x;
-    newMarker.CenterY      = y;
-    newMarker.Selected = true;
+    TrackMarker newMarker = TrackMarker(cv::Rect2f(x - 50, y - 50, 100, 100));
 
+    newMarker.BeginFrame = this->model.VideoSliderValue - 1; // First frame index is 0, GUI shows 1
+    newMarker.EndFrame   = 0;
 
     this->model.TrackMarkerCollection.push_back(newMarker);
 

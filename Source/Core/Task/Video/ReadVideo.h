@@ -55,7 +55,7 @@ public:
 	TaskStatus GetStatus();
 	std::shared_ptr<void> GetResult();
 
-    void SetVideoFilePath(std::string projectPath);
+    void SetVideoFilePath(std::string videoFile);
 
     void SetReadRange(int startFrame, int endFrame);
 

@@ -19,7 +19,6 @@ private:
     void cacheVideo(std::string filePath);
 
     void detectORBCallback();
-	void generateOverlay(int frameIdx);
     void trackMarkersCallback();
 
 public:

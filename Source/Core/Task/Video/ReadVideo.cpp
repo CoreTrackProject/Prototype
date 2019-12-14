@@ -139,6 +139,8 @@ bool ReadVideo::readVideo() {
                 return false;
             }
 
+
+
             if(idx >= this->startFrame && idx <= this->endFrame) { // 0 - 99 resulted frame count should be 100 / [99; 99] -> 1 frame / [0; 1] -> 2 frames
 
                 cv::Mat image = cv::Mat(decFrame->height, decFrame->width, CV_8UC3);
@@ -154,6 +156,9 @@ bool ReadVideo::readVideo() {
                 idx++;
                 break;
             }
+
+
+
 
         }
 
@@ -191,8 +196,8 @@ std::shared_ptr<void> ReadVideo::GetResult() {
     return this->result;
 }
 
-void ReadVideo::SetVideoFilePath(std::string projectFilePath) {
-    this->videoFilePath = projectFilePath;
+void ReadVideo::SetVideoFilePath(std::string videoFilePath) {
+    this->videoFilePath = videoFilePath;
 }
 
 void ReadVideo::SetReadRange(int startFrame, int endFrame) {
