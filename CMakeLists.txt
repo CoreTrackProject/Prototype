@@ -1,7 +1,5 @@
 cmake_minimum_required(VERSION 3.5)
 
-set(CMAKE_TOOLCHAIN_FILE "./ThirdParty/vcpkg-2019.11/scripts/buildsystems/vcpkg.cmake")
-
 set(BUILD_TARGET "CoreTrack")
 
 set(BUILD_VERSION_MAJOR 0)
@@ -95,6 +93,11 @@ add_include(${Boost_INCLUDE_DIRS})
 
 add_include("./ThirdParty/libmv")
 add_include(${AVCODEC_INCLUDE_DIR})
+
+if (MSVC)
+	add_compile_options(-bigobj)
+endif(MSVC)
+
 
 get_property(local_include_list GLOBAL PROPERTY include_list)
 include_directories(${local_include_list})

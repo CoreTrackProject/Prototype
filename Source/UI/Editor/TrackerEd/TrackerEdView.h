@@ -13,9 +13,6 @@
 // https://github.com/opencv/opencv/blob/master/samples/python/plane_tracker.py#L74
 // https://www.youtube.com/watch?v=pzVbhxx6aog
 
-
-
-
 enum class TrackerEdState {
     Ready,
     AddTracker
@@ -59,7 +56,5 @@ private:
     void drawBody();
 
     void addTrackMarker(int x, int y);
-
-
 
 };
