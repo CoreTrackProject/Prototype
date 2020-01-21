@@ -66,7 +66,7 @@ set(SRC
 
    ${CMAKE_CURRENT_SOURCE_DIR}/ThirdParty/imgui-node-editor/ThirdParty/stb_image/stb_image.h
    #${CMAKE_CURRENT_SOURCE_DIR}/ThirdParty/imgui-node-editor/ThirdParty/gl3w/Source/gl3w.c
-   ${CMAKE_CURRENT_SOURCE_DIR}/ThirdParty/imgui-node-editor/Examples/Common/Application/Source/GLFW/imgui_impl_glfw_gl3.cpp
+   #${CMAKE_CURRENT_SOURCE_DIR}/ThirdParty/imgui-node-editor/Examples/Common/Application/Source/GLFW/imgui_impl_glfw_gl3.cpp
    
    # imgui-node-editor
    ${CMAKE_CURRENT_SOURCE_DIR}/ThirdParty/imgui-node-editor/NodeEditor/Include/imgui_node_editor.h
