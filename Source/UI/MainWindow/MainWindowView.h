@@ -18,7 +18,8 @@ private:
 	std::function<void()> saveProjectCallback;
 	std::function<void(std::string)> saveProjectAsCallback;
     std::function<void()> openNewTrackerEdInstanceCallback;
-
+	std::function<void()> openNewViewport3DInstanceCallback;
+	
 	char newProjectInputText[256] = "";
 
 public:
@@ -34,7 +35,8 @@ public:
 	void SetSaveProjectCallback(std::function<void()> saveProjectCallback);
 	void SetSaveProjectAsCallback(std::function<void(std::string)> saveProjectAsCallback);
     void SetOpenNewTrackerEdInstanceCallback(std::function<void()> openNewTrackerEdInstanceCallback);
-
+	void SetOpenNewViewport3DInstanceCallback(std::function<void ()> openNewViewport3DInstanceCallback);
+	
 private:
     void drawToolbar();
 

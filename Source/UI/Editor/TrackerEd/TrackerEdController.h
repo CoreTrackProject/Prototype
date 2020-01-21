@@ -5,7 +5,6 @@
 #include "TrackerEdView.h"
 #include "TrackerEdModel.h"
 
-
 #include <libmv/image/image.h>
 
 class TrackerEdController : public IEditorController {
@@ -13,7 +12,6 @@ class TrackerEdController : public IEditorController {
 private:
     TrackerEdView  view;
     TrackerEdModel model;
-
 
     void addClipCallback(std::string filePath);
     void cacheVideo(std::string filePath);
@@ -25,12 +23,8 @@ public:
     TrackerEdController();
     ~TrackerEdController();
 
-
     void Init();
     void DeInit();
     void Render();
-
-
-
 
 };

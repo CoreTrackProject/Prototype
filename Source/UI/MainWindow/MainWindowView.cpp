@@ -129,6 +129,10 @@ void MainWindowView::SetOpenNewTrackerEdInstanceCallback(std::function<void ()> 
     this->openNewTrackerEdInstanceCallback = openNewTrackerEdInstanceCallback;
 }
 
+void MainWindowView::SetOpenNewViewport3DInstanceCallback(std::function<void ()> openNewViewport3DInstanceCallback) {
+    this->openNewViewport3DInstanceCallback = openNewViewport3DInstanceCallback;
+}
+
 
 void MainWindowView::drawToolbar() {
 	
@@ -189,6 +193,9 @@ void MainWindowView::drawToolbar() {
 		{
 			if (ImGui::MenuItem("Tracker Editor", "")) {
                 this->openNewTrackerEdInstanceCallback();
+			}
+			if (ImGui::MenuItem("3D Viewport", "")) {
+                this->openNewViewport3DInstanceCallback();
 			}
 
 			ImGui::EndMenu();

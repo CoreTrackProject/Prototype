@@ -6,6 +6,8 @@
 #include <opencv2/videoio.hpp>
 #include <opencv2/features2d.hpp>
 
+#include <libmv-capi.h>
+
 class TrackMarker {
 
 private:

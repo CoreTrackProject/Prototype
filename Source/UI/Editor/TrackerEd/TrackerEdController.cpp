@@ -14,9 +14,6 @@
 #include <boost/log/trivial.hpp>
 #include <boost/filesystem.hpp>
 
-
-#include <libmv/tracking/klt_region_tracker.h>
-
 #include <opencv2/tracking.hpp>
 
 

@@ -29,5 +29,5 @@ public:
 	void SaveProjectCallback();
     void SaveProjectAsCallback(std::string projectFilePath);
     void OpenNewTrackerEdInstanceCallback();
-
+	void OpenNewViewport3DInstanceCallback();
 };

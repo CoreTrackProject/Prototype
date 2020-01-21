@@ -242,6 +242,10 @@ void TrackerEdView::drawBody() {
 void TrackerEdView::addTrackMarker(int x, int y) {
     // Add tracker marker by position
 
+
+
+
+
     BOOST_LOG_TRIVIAL(debug) << "Add track marker (" << x << ", " <<  y << ")";
 
 
@@ -251,6 +255,9 @@ void TrackerEdView::addTrackMarker(int x, int y) {
     newMarker.EndFrame   = 0;
 
     this->model.TrackMarkerCollection.push_back(newMarker);
+
+
+
 
 
 

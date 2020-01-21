@@ -2,6 +2,7 @@
 #include "Project/Project.h"
 
 #include "Editor/TrackerEd/TrackerEdController.h"
+#include "Editor/Viewport3D/Viewport3DController.h"
 
 #include <imgui.h>
 #include <boost/log/trivial.hpp>
@@ -21,6 +22,7 @@ void MainWindowController::Init() {
 	this->view->SetSaveProjectCallback(std::bind(&MainWindowController::SaveProjectCallback, this));
 	this->view->SetSaveProjectAsCallback(std::bind(&MainWindowController::SaveProjectAsCallback, this, std::placeholders::_1));
     this->view->SetOpenNewTrackerEdInstanceCallback(std::bind(&MainWindowController::OpenNewTrackerEdInstanceCallback, this));
+	this->view->SetOpenNewViewport3DInstanceCallback(std::bind(&MainWindowController::OpenNewViewport3DInstanceCallback, this));
 
 }
 
@@ -70,3 +72,13 @@ void MainWindowController::OpenNewTrackerEdInstanceCallback() {
 
     this->editorCollection.push_back(std::move(ed));
 }
+
+void MainWindowController::OpenNewViewport3DInstanceCallback() {
+
+	std::shared_ptr<Viewport3DController> ed = std::make_shared<Viewport3DController>();
+
+	ed->Init();
+	
+	this->editorCollection.push_back(std::move(ed));
+}
+
