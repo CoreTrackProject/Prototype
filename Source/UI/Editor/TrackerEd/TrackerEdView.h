@@ -21,12 +21,10 @@ enum class TrackerEdState {
 class TrackerEdView : IEditorView {
 
 private:
-    //ImTextureID importFileTex;
 
 	// this shall be exported to a cache engine (TODO)
 	// invocation for caching also in TrackerEdController
 	
-    Content currVideoFile;
 	TrackerEdModel &model;
 
     TrackerEdState currState = TrackerEdState::Ready;
@@ -54,7 +52,6 @@ public:
 private:
     void drawToolbar();
     void drawBody();
-
     void addTrackMarker(int x, int y);
 
 };

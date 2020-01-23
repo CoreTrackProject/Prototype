@@ -20,7 +20,7 @@ find_package(glfw3 CONFIG REQUIRED)
 find_package(unofficial-nativefiledialog CONFIG REQUIRED)
 find_package(Boost REQUIRED filesystem log_setup log serialization )
 find_package(GLEW REQUIRED)
-
+find_package(Ceres CONFIG REQUIRED) # for libmv
 
 find_library(XXHASH_LIBRARY NAMES xxhash)
 include(CMake/Utils.cmake)
@@ -124,6 +124,8 @@ target_link_libraries(
     unofficial::nativefiledialog::nfd
     ${XXHASH_LIBRARY}
     GLEW::GLEW
+
+	ceres
     libmv
 
     # FFMPEG related libs

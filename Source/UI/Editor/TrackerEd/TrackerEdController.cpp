@@ -26,6 +26,9 @@ TrackerEdController::TrackerEdController() : view(model) {
     this->view.SetTrackerMarkersCallback(std::bind(&TrackerEdController::trackMarkersCallback, this));
 
 
+	mv::AutoTrack track(&ed);
+
+
 
 }
 

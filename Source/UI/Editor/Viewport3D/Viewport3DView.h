@@ -10,10 +10,13 @@ class Viewport3DView : public IEditorView {
 private:
 	Viewport3DModel &model;
 
-	GLuint FramebufferName = 0;
-	GLuint renderedTexture;
-	GLuint depthrenderbuffer;
-	GLenum DrawBuffers[1] = { GL_COLOR_ATTACHMENT0 };
+	unsigned int framebuffer;
+	unsigned int textureColorbuffer;
+	unsigned int rbo;
+	bool isOpen = true;
+
+	
+
 
 	public:
 	Viewport3DView(Viewport3DModel &model);
@@ -22,5 +25,8 @@ private:
 	 void Init();
 	 void Render();
 	 void DeInit();
+
+private:
+	void setViewportSize(int width, int height);
 	
 };

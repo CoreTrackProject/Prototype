@@ -4,7 +4,7 @@
 #include "Data/TrackMarker.h"
 
 
-
+#include <libmv/autotrack/autotrack.h>
 
 struct VideoFrameOCV {
     ImTextureID FrameAsTexture;
@@ -20,16 +20,20 @@ struct VideoFrameOCV {
 };
 
 class TrackerEdModel {
+private:
+	
+
 
 public:
     int VideoSliderValue = 1;
     int CurrFrameArrIdx = 0;
-
     std::vector<VideoFrameOCV> FrameCollection;
-
     std::vector<TrackMarker> TrackMarkerCollection;
 
+	std::vector<mv::Marker> MvMarkerCollection;
+
     Video CurrVideo;
+	
 
 public:
     TrackerEdModel();

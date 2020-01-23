@@ -6,7 +6,7 @@
 #include <opencv2/videoio.hpp>
 #include <opencv2/features2d.hpp>
 
-#include <libmv-capi.h>
+
 
 class TrackMarker {
 
@@ -16,6 +16,8 @@ private:
     // TrackArea is relative to SearchArea
     cv::Rect2f TrackArea;
 
+	
+
 public:
 
     // Describing the lifetime of the tracker
@@ -24,6 +26,8 @@ public:
 
     // Stores the transformation of a tracker during tracking process
     std::vector<TrackMarker> Anim;
+
+
 
 public:
     TrackMarker();
