@@ -2,56 +2,79 @@
 
 
 TrackMarker::TrackMarker() {
-    this->SearchArea = cv::Rect2f(0, 0, 100, 100);
-}
-
-TrackMarker::TrackMarker(cv::Rect2f searchArea) {
-
-    this->SearchArea = searchArea;
-
-    cv::Point2f centerSA = this->GetCenterSearchAreaRelative();
-    this->TrackArea  = cv::Rect2f(centerSA.x - 10, centerSA.y - 10, 20, 20);
 
 }
 
+TrackMarker::TrackMarker(cv::Point2d center) {
+	
+
+	this->mvMarker.clip = 0;
+	this->mvMarker.reference_clip = 0;
+	this->mvMarker.model_type = mv::Marker::POINT;
+	this->mvMarker.model_id = 0;
+	this->mvMarker.track = 0;
+	this->mvMarker.weight = 1.0;
+	this->mvMarker.frame = 0;
+	this->mvMarker.reference_frame = 0;
+
+	this->mvMarker.source = mv::Marker::Source::MANUAL;
+
+
+
+
+	this->mvMarker.center(0) = center.x;
+	this->mvMarker.center(1) = center.y;
+
+	// Search area
+	this->mvMarker.search_region.min(0) = center.x - 50;
+	this->mvMarker.search_region.min(1) = center.y - 50;
+
+	this->mvMarker.search_region.max(0) = center.x + 50;
+	this->mvMarker.search_region.max(1) = center.y + 50;
+
+	// Track area
+	this->mvMarker.patch.coordinates(0, 0) = center.x - 25;
+	this->mvMarker.patch.coordinates(0, 1) = center.y - 25;
+
+	this->mvMarker.patch.coordinates(1, 0) = center.x + 25;
+	this->mvMarker.patch.coordinates(1, 1) = center.y - 25;
+
+	this->mvMarker.patch.coordinates(2, 0) = center.x + 25;
+	this->mvMarker.patch.coordinates(2, 1) = center.y + 25;
+
+	this->mvMarker.patch.coordinates(3, 0) = center.x - 25;
+	this->mvMarker.patch.coordinates(3, 1) = center.y + 25;
+
+
+}
 
 cv::Rect2f TrackMarker::GetSearchArea() {
-    return this->SearchArea;
+
+	cv::Rect2d rect;
+	rect.x = this->mvMarker.search_region.min(0);
+	rect.y = this->mvMarker.search_region.min(1);
+
+	rect.width  = this->mvMarker.search_region.max(0) -
+		this->mvMarker.search_region.min(0);
+
+	rect.height = this->mvMarker.search_region.max(1) -
+		this->mvMarker.search_region.min(1);
+
+    return rect;
 }
 
-cv::Rect2f TrackMarker::GetTrackArea() {
-    return this->TrackArea;
-}
-
-cv::Point2f TrackMarker::GetCenterSearchAreaRelative() {
-    return cv::Point2f(
-        this->SearchArea.width / 2,
-        this->SearchArea.height / 2
-        );
+mv::Quad2Df TrackMarker::GetMvTrackArea() {
+	return this->mvMarker.patch;
 }
 
 cv::Point2f TrackMarker::GetCenterTrackArea() {
-    return cv::Point2f(
-        (this->TrackArea.tl().x + this->TrackArea.br().x) / 2,
-        (this->TrackArea.tl().y + this->TrackArea.br().y) / 2
-        );
-}
 
-void TrackMarker::AdjustSearchAreaToTrackArea(cv::Rect2f trackArea) {
+	cv::Point2f point = cv::Point2f(
+		this->mvMarker.center(0),
+		this->mvMarker.center(1)
+	);
 
-    this->TrackArea = trackArea;
-
-    cv::Point2f posCenterNewTrackAreaRel = cv::Point2f(
-        trackArea.br().x - (trackArea.width / 2),
-        trackArea.br().y - (trackArea.height / 2));
-
-    cv::Point2f posCenterSearchAreaRel = cv::Point2f(
-        this->SearchArea.width / 2,
-        this->SearchArea.height / 2);
-
-    cv::Point2f delta = cv::Point2f(posCenterNewTrackAreaRel.x - posCenterSearchAreaRel.x, posCenterNewTrackAreaRel.y - posCenterSearchAreaRel.y);
-
-    this->SearchArea  = cv::Rect2f(this->SearchArea.x + delta.x, this->SearchArea.y + delta.y, this->SearchArea.width, this->SearchArea.height);
+	return point;
 }
 
 TrackMarker TrackMarker::Copy() {
@@ -60,8 +83,11 @@ TrackMarker TrackMarker::Copy() {
     newMarker.BeginFrame = this->BeginFrame;
     newMarker.EndFrame   = this->EndFrame;
 
-    newMarker.SearchArea = this->SearchArea;
-    newMarker.TrackArea  = this->TrackArea;
+
 
     return newMarker;
+}
+
+mv::Marker TrackMarker::GetLibmvMarker() {
+	return this->mvMarker;
 }

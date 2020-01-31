@@ -47,7 +47,9 @@ void TrackerEdView::SetTrackerMarkersCallback(std::function<void ()> trackMarker
     this->trackMarkersCallback = trackMarkersCallback;
 }
 
-
+void TrackerEdView::SetAddTrackMarkerCallback(std::function<void(TrackMarker)> addTrackMarkerCallback) {
+	this->addTrackMarkerCallback = addTrackMarkerCallback;
+}
 
 void TrackerEdView::drawToolbar() {
 
@@ -114,7 +116,9 @@ void TrackerEdView::drawBody() {
 
     if (this->model.CurrVideo.HasFrames()) {
 
-        ImGui::BeginChildFrame(1, ImVec2(1280, 720));
+		float edWindowWidth = ImGui::GetWindowWidth();
+
+        ImGui::BeginChildFrame(1, ImVec2(edWindowWidth, 720));
         ImVec2 panPanelPos = ImGui::GetCursorScreenPos();
 
         if (ImGui::IsItemActive() && ImGui::IsMouseDragging() && this->currState == TrackerEdState::Ready) {
@@ -125,7 +129,7 @@ void TrackerEdView::drawBody() {
         ImGui::GetWindowDrawList()->AddImage(
             this->model.CurrVideo.GetTextureFrameByIdx(this->model.VideoSliderValue - 1),
             ImVec2(panPanelPos.x + this->imgViewPos.x, panPanelPos.y + this->imgViewPos.y),
-            ImVec2(panPanelPos.x + this->imgViewPos.x + 1280, panPanelPos.y + this->imgViewPos.y + 720)
+            ImVec2(panPanelPos.x + this->imgViewPos.x + this->model.CurrVideo.GetVideoDim().width, panPanelPos.y + this->imgViewPos.y + this->model.CurrVideo.GetVideoDim().height)
             );
 
 
@@ -147,14 +151,8 @@ void TrackerEdView::drawBody() {
                 // Right Marker = MarkerCollection[CurrFrameIdx - Begin Frame]
 
 
-                TrackMarker currMarker;
+                TrackMarker currMarker = marker;
                 int markerIdx = (this->model.VideoSliderValue - 1) - marker.BeginFrame;
-
-                if(marker.EndFrame > 0 && marker.Anim.size() > markerIdx) {
-                    currMarker = marker.Anim.at(markerIdx);
-                } else {
-                    currMarker = marker;
-                }
 
                 // Offset of the image view
                 ImVec2 offset = ImVec2(
@@ -163,26 +161,30 @@ void TrackerEdView::drawBody() {
 
                 // Top left corner of a trackmarker
                 ImVec2 markerTLCornerPosAbsolute = ImVec2(offset.x + currMarker.GetSearchArea().tl().x, offset.y + currMarker.GetSearchArea().tl().y);
-				ImVec2 markerTDCornerPosAbsolute = ImVec2(offset.x + currMarker.GetSearchArea().br().x, offset.y + currMarker.GetSearchArea().br().y);
+				// Down right corner of  a trackmarker
+				ImVec2 markerDRCornerPosAbsolute = ImVec2(offset.x + currMarker.GetSearchArea().br().x, offset.y + currMarker.GetSearchArea().br().y);
 
+				// Draw the search area of a trackmarker
                 ImGui::GetWindowDrawList()->AddRect(
                     markerTLCornerPosAbsolute,
-					markerTDCornerPosAbsolute,
+					markerDRCornerPosAbsolute,
                     IM_COL32(255, 255, 0, 255) // yellow
                     );
 
-
 				ImDrawList* draw_list = ImGui::GetWindowDrawList();
-				draw_list->AddCircle(markerTDCornerPosAbsolute, 6.0f, IM_COL32(0, 0, 0, 255));
-				draw_list->AddCircleFilled(markerTDCornerPosAbsolute, 5.0f, IM_COL32(255, 255, 0, 255));
-				draw_list->AddCircle(markerTDCornerPosAbsolute, 1.0f, IM_COL32(0, 0, 0, 255));
+				draw_list->AddCircle(markerDRCornerPosAbsolute, 6.0f, IM_COL32(0, 0, 0, 255));
+				draw_list->AddCircleFilled(markerDRCornerPosAbsolute, 5.0f, IM_COL32(255, 255, 0, 255));
+				draw_list->AddCircle(markerDRCornerPosAbsolute, 1.0f, IM_COL32(0, 0, 0, 255));
 				
-
-                ImGui::GetWindowDrawList()->AddRect(
-                    ImVec2(markerTLCornerPosAbsolute.x + currMarker.GetTrackArea().tl().x, markerTLCornerPosAbsolute.y + currMarker.GetTrackArea().tl().y),
-                    ImVec2(markerTLCornerPosAbsolute.x + currMarker.GetTrackArea().br().x, markerTLCornerPosAbsolute.y + currMarker.GetTrackArea().br().y),
-                    IM_COL32(0, 255, 255, 255)
-                    );
+				// Draw search area of a trackmarker
+				mv::Quad2Df trackAreaQuad = currMarker.GetMvTrackArea();
+				ImGui::GetWindowDrawList()->AddQuad(
+					ImVec2(offset.x + trackAreaQuad.coordinates(0, 0), offset.y + trackAreaQuad.coordinates(0, 1)),
+					ImVec2(offset.x + trackAreaQuad.coordinates(1, 0), offset.y + trackAreaQuad.coordinates(1, 1)),
+					ImVec2(offset.x + trackAreaQuad.coordinates(2, 0), offset.y + trackAreaQuad.coordinates(2, 1)),
+					ImVec2(offset.x + trackAreaQuad.coordinates(3, 0), offset.y + trackAreaQuad.coordinates(3, 1)),
+					IM_COL32(0, 255, 255, 255)
+				);
 
             } // end if
 
@@ -190,10 +192,6 @@ void TrackerEdView::drawBody() {
         }
 
         ImGui::EndChildFrame();
-
-
-
-
 
 
         // Tracker add logic
@@ -220,25 +218,18 @@ void TrackerEdView::drawBody() {
                         return;
                     }
                 }
-
                 // Zooming (TODO)
                 if(io->MouseWheel != 0.0f) {
                     //BOOST_LOG_TRIVIAL(debug) << "Mouse wheel used: " << io->MouseWheel;
                 }
-
             }
         }
 
-
-
-
-
         ImGui::Separator();
 
-
-
+		ImGui::PushItemWidth(edWindowWidth);
         ImGui::SliderInt(
-            "Video",
+            "",
             &this->model.VideoSliderValue,
             1,
             this->model.CurrVideo.GetFrameCount()
@@ -255,58 +246,12 @@ void TrackerEdView::addTrackMarker(int x, int y) {
     BOOST_LOG_TRIVIAL(debug) << "Add track marker (" << x << ", " <<  y << ")";
 
 
-    //TrackMarker newMarker = TrackMarker(cv::Rect2f(x - 50, y - 50, 100, 100));
+    TrackMarker newMarker = TrackMarker(cv::Point2d(x, y));
 
-    //newMarker.BeginFrame = this->model.VideoSliderValue - 1; // First frame index is 0, GUI shows 1
-    //newMarker.EndFrame   = this->model.VideoSliderValue - 1;
+    newMarker.BeginFrame = this->model.VideoSliderValue - 1; // First frame index is 0, GUI shows 1
+    newMarker.EndFrame   = this->model.VideoSliderValue - 1;
 
-    // this->model.TrackMarkerCollection.push_back(newMarker);
-
-
-	mv::Marker newMvMarker;
-	newMvMarker.center = mv::Vec2f(x, y);
-
-	newMvMarker.clip = 0;
-	newMvMarker.reference_clip = 0;
-
-	// This doesn't seem to be used at all by libmv TrackRegion
-	newMvMarker.model_type = mv::Marker::POINT;
-	newMvMarker.model_id   = 0;
-	newMvMarker.track      = 0;
-
-
-
-	mv::Quad2Df trackPattern;
-	trackPattern.coordinates(0, 0) = x;
-	trackPattern.coordinates(0, 1) = y;
-
-	trackPattern.coordinates(1, 0) = x + 100;
-	trackPattern.coordinates(1, 1) = y;
-
-	trackPattern.coordinates(2, 0) = x + 100;
-	trackPattern.coordinates(2, 1) = y + 100;
-
-	trackPattern.coordinates(3, 0) = x;
-	trackPattern.coordinates(3, 1) = y + 100;
-
-	mv::Region sRegion;
-	sRegion.min = mv::Vec2f(x - 50, y - 50);
-	sRegion.max = mv::Vec2f(x + 50, y + 50);
-	newMvMarker.search_region = std::move(sRegion);
-
-
-
-
-	//newMvMarker.patch = trackPattern;
-
-	newMvMarker.frame = this->model.VideoSliderValue - 1;
-	newMvMarker.model_type = mv::Marker::ModelType::POINT;
-
-
-
-	newMvMarker.weight = 1.0;
-	
-
+	this->addTrackMarkerCallback(newMarker);
 
 }
 

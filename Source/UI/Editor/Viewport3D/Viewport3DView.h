@@ -14,8 +14,10 @@ private:
 	unsigned int textureColorbuffer;
 	unsigned int rbo;
 	bool isOpen = true;
+	GLuint ProgramID;
 
-	
+	// triangle
+	GLuint vertexbuffer;	
 
 
 	public:
@@ -28,5 +30,6 @@ private:
 
 private:
 	void setViewportSize(int width, int height);
+	GLuint loadShaders();
 	
 };

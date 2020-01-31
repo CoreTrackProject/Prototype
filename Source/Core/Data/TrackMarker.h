@@ -6,47 +6,36 @@
 #include <opencv2/videoio.hpp>
 #include <opencv2/features2d.hpp>
 
-
+#include <libmv/autotrack/autotrack.h>
 
 class TrackMarker {
 
 private:
-    cv::Rect2f SearchArea;
-
-    // TrackArea is relative to SearchArea
-    cv::Rect2f TrackArea;
-
-	
+	mv::Marker mvMarker;
 
 public:
-
     // Describing the lifetime of the tracker
     int BeginFrame = 0;
     int EndFrame   = 0;
 
-    // Stores the transformation of a tracker during tracking process
-    std::vector<TrackMarker> Anim;
-
-
+	
 
 public:
     TrackMarker();
 
-    TrackMarker(cv::Rect2f searchArea);
+	TrackMarker(cv::Point2d center);
 
-    TrackMarker(cv::Rect2f searchArea, cv::Rect2f trackArea);
 
+public:
     cv::Rect2f GetSearchArea();
 
-    cv::Rect2f GetTrackArea();
-
-    cv::Point2f GetCenterSearchAreaRelative();
+	mv::Quad2Df GetMvTrackArea();
 
     cv::Point2f GetCenterTrackArea();
 
-    void AdjustSearchAreaToTrackArea(cv::Rect2f trackArea);
-
     TrackMarker Copy();
+
+	mv::Marker GetLibmvMarker();
 
 };
 

@@ -36,6 +36,7 @@ public:
 	std::function<void(std::string)> addClipCallback;
     std::function<void()> detectOrbCallback;
     std::function<void()> trackMarkersCallback;
+	std::function<void(TrackMarker)> addTrackMarkerCallback;
 
 public:
 	TrackerEdView(TrackerEdModel &model);
@@ -46,6 +47,7 @@ public:
     void DeInit();
 
 	void SetAddClipCallback(std::function<void(std::string)> addClipCallback);
+	void SetAddTrackMarkerCallback(std::function<void(TrackMarker)> addTrackMarkerCallback);
 	void SetDetectOrbCallback(std::function<void()> detectOrbCallback);
     void SetTrackerMarkersCallback(std::function<void()> trackMarkersCallback);
 

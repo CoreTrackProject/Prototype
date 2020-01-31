@@ -24,12 +24,11 @@ TrackerEdController::TrackerEdController() : view(model) {
     this->view.SetAddClipCallback(std::bind(&TrackerEdController::addClipCallback, this, std::placeholders::_1));
     this->view.SetDetectOrbCallback(std::bind(&TrackerEdController::detectORBCallback, this));
     this->view.SetTrackerMarkersCallback(std::bind(&TrackerEdController::trackMarkersCallback, this));
-
-
-	mv::AutoTrack track(&ed);
-
-
-
+	this->view.SetAddTrackMarkerCallback(std::bind(&TrackerEdController::addTrackMarkerCallback, this, std::placeholders::_1));
+	
+	
+	this->autotrack = std::make_unique<mv::AutoTrack>(&accessor);
+	
 }
 
 TrackerEdController::~TrackerEdController() {
@@ -54,23 +53,20 @@ void TrackerEdController::addClipCallback(std::string filePath) {
     Project::GetInstance().ImportFile(filePath);
 
     this->cacheVideo(filePath);
+	this->accessor.SetVideoSource(this->model.CurrVideo);
 }
 
 void TrackerEdController::detectORBCallback() {
 
-    for(TrackMarker &marker : this->model.TrackMarkerCollection) {
-
-        cv::Ptr<cv::Feature2D> feature = cv::ORB::create(10);
-
-        for (int idx = 0; idx < this->model.FrameCollection.size(); idx++) {
-
-            this->model.FrameCollection[idx].HasORB = true;
-
-            BOOST_LOG_TRIVIAL(debug) << "Frame processed " << idx << "/" << this->model.FrameCollection.size();
 
 
-        }
-    }
+    //for(TrackMarker &marker : this->model.TrackMarkerCollection) {
+    //    cv::Ptr<cv::Feature2D> feature = cv::ORB::create(10);
+    //    for (int idx = 0; idx < this->model.FrameCollection.size(); idx++) {
+    //        //this->model.FrameCollection[idx].HasORB = true;
+    //        BOOST_LOG_TRIVIAL(debug) << "Frame processed " << idx << "/" << this->model.FrameCollection.size();
+    //    }
+    //}
 
 
 
@@ -78,7 +74,15 @@ void TrackerEdController::detectORBCallback() {
 
 void TrackerEdController::trackMarkersCallback() {
 
-    for(TrackMarker &marker : this->model.TrackMarkerCollection) {
+	mv::Marker trackedMarker = this->model.TrackMarkerCollection[0].GetLibmvMarker();
+	mv::TrackRegionResult result;
+	
+	bool status = this->autotrack->TrackMarker(&trackedMarker, &result);
+
+	
+	//this->autotrack->DetectAndTrack
+
+   /* for(TrackMarker &marker : this->model.TrackMarkerCollection) {
 
         cv::Ptr<cv::Tracker> ocvTracker = cv::TrackerCSRT::create();
         cv::Mat currFrame;
@@ -123,10 +127,15 @@ void TrackerEdController::trackMarkersCallback() {
             }
 
         }
-    }
+    }*/
 
 }
 
 void TrackerEdController::cacheVideo(std::string filePath) {
     this->model.CurrVideo.ImportVideoFromPath(filePath);
+}
+
+void TrackerEdController::addTrackMarkerCallback(TrackMarker marker) {
+	this->autotrack->AddMarker(marker.GetLibmvMarker());
+	this->model.TrackMarkerCollection.push_back(marker);
 }
