@@ -1,5 +1,5 @@
 #include "TrackerEdView.h"
-#include "Project/Project.h"
+
 #include "Utils/FileUtils.h"
 
 #include <stb_image.h>
@@ -11,13 +11,14 @@
 
 #include <cmath>
 
+#include <ImSequencer.h>
+
 TrackerEdView::TrackerEdView(TrackerEdModel &model) : model(model) {}
 
 TrackerEdView::~TrackerEdView() {}
 
 
 void TrackerEdView::Init() {
-
 
 }
 
@@ -127,19 +128,24 @@ void TrackerEdView::drawBody() {
         }
 
         ImGui::GetWindowDrawList()->AddImage(
-            this->model.CurrVideo.GetTextureFrameByIdx(this->model.VideoSliderValue - 1),
+            this->model.CurrVideo.GetTextureFrameByIdx(this->model.VideoSliderValue),
             ImVec2(panPanelPos.x + this->imgViewPos.x, panPanelPos.y + this->imgViewPos.y),
             ImVec2(panPanelPos.x + this->imgViewPos.x + this->model.CurrVideo.GetVideoDim().width, panPanelPos.y + this->imgViewPos.y + this->model.CurrVideo.GetVideoDim().height)
             );
 
-
         // Draw track markers
-        for(TrackMarker marker : this->model.TrackMarkerCollection) {
+		for (TrackSequence::TrackSequenceItem sequenceItem : this->model.sequence.myItems) {
 
-            int currFrameIdx = this->model.VideoSliderValue - 1;
+			// The video clip is the first sequence item, so do not try to draw the marker
+			if (sequenceItem.SequenceItemType != TrackSequenceItemType::Track) { continue; }
+
+			TrackMarker marker = sequenceItem.marker;
+
+            int currFrameIdx = this->model.VideoSliderValue;
 
             if(marker.BeginFrame <= currFrameIdx &&
                 marker.EndFrame  >= currFrameIdx) {
+
 
 
                 // Display tracked marker
@@ -150,9 +156,15 @@ void TrackerEdView::drawBody() {
                 // Begin Frame   End Frame
                 // Right Marker = MarkerCollection[CurrFrameIdx - Begin Frame]
 
+				// Draw check if it is reference marker (placed by the user) or tracked by libmv
+				
+				TrackMarker currMarker = marker;
+				if (this->model.VideoSliderValue != marker.BeginFrame) {
+					currMarker.mvMarker = marker.TrackedMarker[this->model.VideoSliderValue - marker.BeginFrame];
+				}
+				
 
-                TrackMarker currMarker = marker;
-                int markerIdx = (this->model.VideoSliderValue - 1) - marker.BeginFrame;
+                int markerIdx = (this->model.VideoSliderValue) - marker.BeginFrame;
 
                 // Offset of the image view
                 ImVec2 offset = ImVec2(
@@ -172,9 +184,9 @@ void TrackerEdView::drawBody() {
                     );
 
 				ImDrawList* draw_list = ImGui::GetWindowDrawList();
-				draw_list->AddCircle(markerDRCornerPosAbsolute, 6.0f, IM_COL32(0, 0, 0, 255));
+				draw_list->AddCircle(markerDRCornerPosAbsolute,       6.0f, IM_COL32(0, 0, 0, 255));
 				draw_list->AddCircleFilled(markerDRCornerPosAbsolute, 5.0f, IM_COL32(255, 255, 0, 255));
-				draw_list->AddCircle(markerDRCornerPosAbsolute, 1.0f, IM_COL32(0, 0, 0, 255));
+				draw_list->AddCircle(markerDRCornerPosAbsolute,       1.0f, IM_COL32(0, 0, 0, 255));
 				
 				// Draw search area of a trackmarker
 				mv::Quad2Df trackAreaQuad = currMarker.GetMvTrackArea();
@@ -206,7 +218,7 @@ void TrackerEdView::drawBody() {
 
                     if(mPos.x  >= panPanelPos.x &&
                         mPos.y >= panPanelPos.y &&
-                        mPos.x <= (panPanelPos.x + 1280) &&
+                        mPos.x <= (panPanelPos.x + edWindowWidth) &&
                         mPos.y <= (panPanelPos.y + 720)) {
 
 
@@ -227,13 +239,27 @@ void TrackerEdView::drawBody() {
 
         ImGui::Separator();
 
-		ImGui::PushItemWidth(edWindowWidth);
-        ImGui::SliderInt(
-            "",
-            &this->model.VideoSliderValue,
-            1,
-            this->model.CurrVideo.GetFrameCount()
-            );
+		// ------------------------------
+		// Draw the sequencer
+		// ------------------------------
+
+		//ImGui::Begin("Sequencer");
+
+		ImGui::PushItemWidth(100);
+		ImGui::InputInt("Current Frame", &this->model.VideoSliderValue);
+		ImGui::PopItemWidth();
+		ImGui::Separator();
+
+		ImSequencer::Sequencer(
+			&this->model.sequence,
+			&this->model.VideoSliderValue,
+			&this->model.SequencerExpandet, 
+			&this->model.SequencerSelectedEntry, 
+			&this->model.FirstFrame,
+			ImSequencer::SEQUENCER_EDIT_STARTEND | ImSequencer::SEQUENCER_ADD | ImSequencer::SEQUENCER_DEL | ImSequencer::SEQUENCER_COPYPASTE | ImSequencer::SEQUENCER_CHANGE_FRAME
+		);
+
+
 
     }
 }
@@ -248,8 +274,8 @@ void TrackerEdView::addTrackMarker(int x, int y) {
 
     TrackMarker newMarker = TrackMarker(cv::Point2d(x, y));
 
-    newMarker.BeginFrame = this->model.VideoSliderValue - 1; // First frame index is 0, GUI shows 1
-    newMarker.EndFrame   = this->model.VideoSliderValue - 1;
+    newMarker.BeginFrame = this->model.VideoSliderValue; // First frame index is 0, GUI shows 1
+    newMarker.EndFrame   = this->model.VideoSliderValue;
 
 	this->addTrackMarkerCallback(newMarker);
 

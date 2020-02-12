@@ -24,3 +24,6 @@ zlib
 libpng
 
 
+Other dependencies:
+
+ImGuizmo: https://github.com/CedricGuillemet/ImGuizmo

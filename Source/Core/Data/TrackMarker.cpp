@@ -16,7 +16,8 @@ TrackMarker::TrackMarker(cv::Point2d center) {
 	this->mvMarker.weight = 1.0;
 	this->mvMarker.frame = 0;
 	this->mvMarker.reference_frame = 0;
-
+	this->mvMarker.disabled_channels = 0;
+	this->mvMarker.status = mv::Marker::Status::UNKNOWN;
 	this->mvMarker.source = mv::Marker::Source::MANUAL;
 
 

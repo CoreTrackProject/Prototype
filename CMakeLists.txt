@@ -41,6 +41,8 @@ set_property(GLOBAL PROPERTY include_list)
 
 set(INC
 	${OPENGL_INCLUDE_DIR}
+
+	#ImGui Node editor
 	${CMAKE_CURRENT_SOURCE_DIR}/ThirdParty/imgui-node-editor/NodeEditor/Include
 	${CMAKE_CURRENT_SOURCE_DIR}/ThirdParty/imgui-node-editor/ThirdParty/imgui
 	${CMAKE_CURRENT_SOURCE_DIR}/ThirdParty/imgui-node-editor/Examples/Common/BlueprintUtilities/Include
@@ -48,41 +50,57 @@ set(INC
 	#${CMAKE_CURRENT_SOURCE_DIR}/ThirdParty/imgui-node-editor/ThirdParty/gl3w/Include
 	${CMAKE_CURRENT_SOURCE_DIR}/ThirdParty/imgui-node-editor/ThirdParty/stb_image
 	${CMAKE_CURRENT_SOURCE_DIR}/ThirdParty/imgui-node-editor/Examples/Common/Application/Source/GLFW
+
+	#ImGui Guizmo and Sequencer
+	${CMAKE_CURRENT_SOURCE_DIR}/ThirdParty/ImGuizmo
+	
 )
 add_include(${INC})
 
 set(SRC
    
-   ${CMAKE_CURRENT_SOURCE_DIR}/ThirdParty/imgui-node-editor/ThirdParty/imgui/imgui.cpp
-   ${CMAKE_CURRENT_SOURCE_DIR}/ThirdParty/imgui-node-editor/ThirdParty/imgui/imgui_widgets.cpp
-   ${CMAKE_CURRENT_SOURCE_DIR}/ThirdParty/imgui-node-editor/ThirdParty/imgui/imgui_draw.cpp
-   ${CMAKE_CURRENT_SOURCE_DIR}/ThirdParty/imgui-node-editor/ThirdParty/imgui/imgui_demo.cpp
+   	${CMAKE_CURRENT_SOURCE_DIR}/ThirdParty/imgui-node-editor/ThirdParty/imgui/imgui.cpp
+   	${CMAKE_CURRENT_SOURCE_DIR}/ThirdParty/imgui-node-editor/ThirdParty/imgui/imgui_widgets.cpp
+   	${CMAKE_CURRENT_SOURCE_DIR}/ThirdParty/imgui-node-editor/ThirdParty/imgui/imgui_draw.cpp
+   	${CMAKE_CURRENT_SOURCE_DIR}/ThirdParty/imgui-node-editor/ThirdParty/imgui/imgui_demo.cpp
 
-   # Borrow some codes in Examples/Common/BlueprintUtilities
-   ${CMAKE_CURRENT_SOURCE_DIR}/ThirdParty/imgui-node-editor/Examples/Common/BlueprintUtilities/Source/ax/Drawing.cpp
-   ${CMAKE_CURRENT_SOURCE_DIR}/ThirdParty/imgui-node-editor/Examples/Common/BlueprintUtilities/Source/ax/Builders.cpp
-   ${CMAKE_CURRENT_SOURCE_DIR}/ThirdParty/imgui-node-editor/Examples/Common/BlueprintUtilities/Source/ax/Widgets.cpp
+   	# Borrow some codes in Examples/Common/BlueprintUtilities
+   	${CMAKE_CURRENT_SOURCE_DIR}/ThirdParty/imgui-node-editor/Examples/Common/BlueprintUtilities/Source/ax/Drawing.cpp
+  	${CMAKE_CURRENT_SOURCE_DIR}/ThirdParty/imgui-node-editor/Examples/Common/BlueprintUtilities/Source/ax/Builders.cpp
+  	${CMAKE_CURRENT_SOURCE_DIR}/ThirdParty/imgui-node-editor/Examples/Common/BlueprintUtilities/Source/ax/Widgets.cpp
 
 
-   ${CMAKE_CURRENT_SOURCE_DIR}/ThirdParty/imgui-node-editor/ThirdParty/stb_image/stb_image.h
-   #${CMAKE_CURRENT_SOURCE_DIR}/ThirdParty/imgui-node-editor/ThirdParty/gl3w/Source/gl3w.c
-   #${CMAKE_CURRENT_SOURCE_DIR}/ThirdParty/imgui-node-editor/Examples/Common/Application/Source/GLFW/imgui_impl_glfw_gl3.cpp
+   	${CMAKE_CURRENT_SOURCE_DIR}/ThirdParty/imgui-node-editor/ThirdParty/stb_image/stb_image.h
+   	#${CMAKE_CURRENT_SOURCE_DIR}/ThirdParty/imgui-node-editor/ThirdParty/gl3w/Source/gl3w.c
+   	#${CMAKE_CURRENT_SOURCE_DIR}/ThirdParty/imgui-node-editor/Examples/Common/Application/Source/GLFW/imgui_impl_glfw_gl3.cpp
    
-   # imgui-node-editor
-   ${CMAKE_CURRENT_SOURCE_DIR}/ThirdParty/imgui-node-editor/NodeEditor/Include/imgui_node_editor.h
-   ${CMAKE_CURRENT_SOURCE_DIR}/ThirdParty/imgui-node-editor/NodeEditor/Source/crude_json.cpp
-   ${CMAKE_CURRENT_SOURCE_DIR}/ThirdParty/imgui-node-editor/NodeEditor/Source/crude_json.h
-   ${CMAKE_CURRENT_SOURCE_DIR}/ThirdParty/imgui-node-editor/NodeEditor/Source/imgui_bezier_math.h
-   ${CMAKE_CURRENT_SOURCE_DIR}/ThirdParty/imgui-node-editor/NodeEditor/Source/imgui_bezier_math.inl
-   ${CMAKE_CURRENT_SOURCE_DIR}/ThirdParty/imgui-node-editor/NodeEditor/Source/imgui_canvas.cpp
-   ${CMAKE_CURRENT_SOURCE_DIR}/ThirdParty/imgui-node-editor/NodeEditor/Source/imgui_canvas.h
-   ${CMAKE_CURRENT_SOURCE_DIR}/ThirdParty/imgui-node-editor/NodeEditor/Source/imgui_extra_math.h
-   ${CMAKE_CURRENT_SOURCE_DIR}/ThirdParty/imgui-node-editor/NodeEditor/Source/imgui_extra_math.inl
-   ${CMAKE_CURRENT_SOURCE_DIR}/ThirdParty/imgui-node-editor/NodeEditor/Source/imgui_node_editor_api.cpp
-   ${CMAKE_CURRENT_SOURCE_DIR}/ThirdParty/imgui-node-editor/NodeEditor/Source/imgui_node_editor_internal.h
-   ${CMAKE_CURRENT_SOURCE_DIR}/ThirdParty/imgui-node-editor/NodeEditor/Source/imgui_node_editor_internal.inl
-   ${CMAKE_CURRENT_SOURCE_DIR}/ThirdParty/imgui-node-editor/NodeEditor/Source/imgui_node_editor.cpp
-   ${CMAKE_CURRENT_SOURCE_DIR}/ThirdParty/imgui-node-editor/NodeEditor/Support/imgui_node_editor.natvis
+   	# imgui-node-editor
+   	${CMAKE_CURRENT_SOURCE_DIR}/ThirdParty/imgui-node-editor/NodeEditor/Include/imgui_node_editor.h
+   	${CMAKE_CURRENT_SOURCE_DIR}/ThirdParty/imgui-node-editor/NodeEditor/Source/crude_json.cpp
+   	${CMAKE_CURRENT_SOURCE_DIR}/ThirdParty/imgui-node-editor/NodeEditor/Source/crude_json.h
+   	${CMAKE_CURRENT_SOURCE_DIR}/ThirdParty/imgui-node-editor/NodeEditor/Source/imgui_bezier_math.h
+   	${CMAKE_CURRENT_SOURCE_DIR}/ThirdParty/imgui-node-editor/NodeEditor/Source/imgui_bezier_math.inl
+   	${CMAKE_CURRENT_SOURCE_DIR}/ThirdParty/imgui-node-editor/NodeEditor/Source/imgui_canvas.cpp
+   	${CMAKE_CURRENT_SOURCE_DIR}/ThirdParty/imgui-node-editor/NodeEditor/Source/imgui_canvas.h
+   	${CMAKE_CURRENT_SOURCE_DIR}/ThirdParty/imgui-node-editor/NodeEditor/Source/imgui_extra_math.h
+   	${CMAKE_CURRENT_SOURCE_DIR}/ThirdParty/imgui-node-editor/NodeEditor/Source/imgui_extra_math.inl
+   	${CMAKE_CURRENT_SOURCE_DIR}/ThirdParty/imgui-node-editor/NodeEditor/Source/imgui_node_editor_api.cpp
+   	${CMAKE_CURRENT_SOURCE_DIR}/ThirdParty/imgui-node-editor/NodeEditor/Source/imgui_node_editor_internal.h
+   	${CMAKE_CURRENT_SOURCE_DIR}/ThirdParty/imgui-node-editor/NodeEditor/Source/imgui_node_editor_internal.inl
+   	${CMAKE_CURRENT_SOURCE_DIR}/ThirdParty/imgui-node-editor/NodeEditor/Source/imgui_node_editor.cpp
+   	${CMAKE_CURRENT_SOURCE_DIR}/ThirdParty/imgui-node-editor/NodeEditor/Support/imgui_node_editor.natvis
+
+
+	# imguizmo
+	${CMAKE_CURRENT_SOURCE_DIR}/ThirdParty/ImGuizmo/ImCurveEdit.h
+	${CMAKE_CURRENT_SOURCE_DIR}/ThirdParty/ImGuizmo/ImCurveEdit.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/ThirdParty/ImGuizmo/ImGradient.h
+	${CMAKE_CURRENT_SOURCE_DIR}/ThirdParty/ImGuizmo/ImGradient.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/ThirdParty/ImGuizmo/ImGuizmo.h
+	${CMAKE_CURRENT_SOURCE_DIR}/ThirdParty/ImGuizmo/ImGuizmo.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/ThirdParty/ImGuizmo/ImSequencer.h
+	${CMAKE_CURRENT_SOURCE_DIR}/ThirdParty/ImGuizmo/ImSequencer.cpp
+	
 )
 
 add_source(${SRC})

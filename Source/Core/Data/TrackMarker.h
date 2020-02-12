@@ -11,13 +11,14 @@
 class TrackMarker {
 
 private:
-	mv::Marker mvMarker;
 
 public:
+
+	mv::Marker mvMarker;
     // Describing the lifetime of the tracker
     int BeginFrame = 0;
     int EndFrame   = 0;
-
+	std::vector<mv::Marker> TrackedMarker;
 	
 
 public:

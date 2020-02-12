@@ -1,10 +1,8 @@
-set(INC
-	.
-)
-
 set(SRC
 	${CMAKE_CURRENT_SOURCE_DIR}/Video.h
 	${CMAKE_CURRENT_SOURCE_DIR}/Video.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/VideoFrameAccessor.h
+	${CMAKE_CURRENT_SOURCE_DIR}/VideoFrameAccessor.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/TrackMarker.h
 	${CMAKE_CURRENT_SOURCE_DIR}/TrackMarker.cpp
 )
